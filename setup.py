@@ -10,6 +10,7 @@ setup(name='pychubby',
                         'opencv-python>=4.1.0.25'
                         ],
       extras_require={'dev': [
+                              'codecov',
                               'flake8',
                               'pytest>=3.6',
                               'pytest-cov',
