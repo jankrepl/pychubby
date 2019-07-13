@@ -5,10 +5,16 @@ setup(name='pychubby',
       packages=['pychubby'],
       install_requires=[
                         'click>=7.0',
-                        'matplotlib>=3.1.1',
+                        'matplotlib>=2.0.0',
                         'numpy>=1.16.4',
                         'opencv-python>=4.1.0.25'
                         ],
-      extras_require={'dev': ['flake8', 'pytest', 'pytest-cov', 'tox']},
-      entry_points={'console_scripts': ['pc = pychubby.cli:cli'] }
+      extras_require={'dev': [
+                              'flake8',
+                              'pytest>=3.6',
+                              'pytest-cov',
+                              'tox'
+                              ]
+                              },
+      entry_points={'console_scripts': ['pc = pychubby.cli:cli']}
       )
