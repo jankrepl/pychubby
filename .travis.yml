@@ -8,8 +8,6 @@ install:
     - pip install .[dev]
 
 script:
-    - pwd
-    - ls -alh
     - pytest
     - flake8 pychubby
 
