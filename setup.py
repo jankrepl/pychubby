@@ -3,7 +3,12 @@ from setuptools import setup
 setup(name='pychubby',
       version=0.1,
       packages=['pychubby'],
-      install_requires=['click'],
+      install_requires=[
+                        'click>=7.0',
+                        'matplotlib>=3.1.1',
+                        'numpy>=1.16.4',
+                        'opencv-python>=4.1.0.25'
+                        ],
       extras_require={'dev': ['flake8', 'pytest', 'pytest-cov', 'tox']},
       entry_points={'console_scripts': ['pc = pychubby.cli:cli'] }
       )
