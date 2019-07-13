@@ -10,3 +10,6 @@ install:
 script:
     - pytest
     - flake8 pychubby
+
+after_success:
+    - codecov
