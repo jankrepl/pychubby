@@ -1,5 +1,4 @@
 [run]
-source = pychubby
 omit = 
     tests/*
     venv/*
