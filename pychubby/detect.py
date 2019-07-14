@@ -20,6 +20,9 @@ def face_rectangle(img):
         the face rectangle. Note that these coordinates use the `(row, column)` convention. The
         length of the list is equal to the number of detected faces.
 
+    faces : list
+        Instance of ``dlib.rectagles`` that can be used in other algorithm.
+
     """
     if not isinstance(img, np.ndarray):
         raise TypeError('The input needs to be a np.ndarray')
@@ -35,4 +38,4 @@ def face_rectangle(img):
         bottom_right = (y2, x2)
         corners.append((top_left, bottom_right))
 
-    return corners
+    return corners, faces

@@ -1,6 +1,12 @@
 """Base classes and functions."""
 
+import pathlib
+
 import numpy as np
+
+CACHE_FOLDER = pathlib.Path.home() / '.pychubby/'
+
+CACHE_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
 class DisplacementField:

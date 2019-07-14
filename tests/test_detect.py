@@ -14,16 +14,16 @@ class TestFaceRectangle:
             face_rectangle('123')
 
     def test_output_face(self, face_img):
-        res = face_rectangle(face_img)
+        res, _ = face_rectangle(face_img)
         assert isinstance(res, list)
         assert len(res) == 1
 
     def test_output_blank(self, blank_img):
-        res = face_rectangle(blank_img)
+        res, _ = face_rectangle(blank_img)
         assert isinstance(res, list)
         assert len(res) == 0
 
     def test_output_faces(self, faces_img):
-        res = face_rectangle(faces_img)
+        res, _ = face_rectangle(faces_img)
         assert isinstance(res, list)
         assert len(res) == 2
