@@ -1,8 +1,11 @@
 """Collection of detection algorithms."""
+import pathlib
 
 import dlib
 import numpy as np
 from skimage.util import img_as_ubyte
+
+from pychubby.base import CACHE_FOLDER
 
 
 def face_rectangle(img):
@@ -39,3 +42,44 @@ def face_rectangle(img):
         corners.append((top_left, bottom_right))
 
     return corners, faces
+
+
+def landmarks_68(img, rectangle, model_path=None):
+    """Predict 68 face landmarks.
+
+    Parameters
+    ----------
+    img : np.ndarray
+        Image of any dtype and number of channels.
+
+    rectangle : dlib.rectangle
+        Rectangle that represents the bounding box around a single face.
+
+    model_path : str or pathlib.Path, default=None
+        Path to where the pretrained model is located. If None then using the `CACHE_FOLDER` model.
+
+    Returns
+    -------
+    lm_points : np.ndarray
+        Array of shape `(68, 2)` where rows are different landmark points and the columns
+        are x and y coordinates.
+
+    original : dlib.full_object_detection
+        Instance of ``dlib.full_object_detection``.
+
+    """
+    if model_path is None:
+        model_path = CACHE_FOLDER / 'shape_predictor_68_face_landmarks.dat'
+    else:
+        model_path = pathlib.Path(model_path)
+
+    if not model_path.is_file():
+        raise IOError('Invalid landmark model, {}'.format(str(model_path)))
+
+    lm_predictor = dlib.shape_predictor(str(model_path))
+
+    original = lm_predictor(img_as_ubyte(img), rectangle)
+
+    lm_points = np.array([[p.x, p.y] for p in original.parts()])
+
+    return lm_points, original
