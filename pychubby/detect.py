@@ -71,7 +71,7 @@ def landmarks_68(img, rectangle, model_path=None):
     if model_path is None:
         model_path = CACHE_FOLDER / 'shape_predictor_68_face_landmarks.dat'
     else:
-        model_path = pathlib.Path(model_path)
+        model_path = pathlib.Path(str(model_path))
 
     if not model_path.is_file():
         raise IOError('Invalid landmark model, {}'.format(str(model_path)))
