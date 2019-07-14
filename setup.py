@@ -5,6 +5,7 @@ setup(name='pychubby',
       packages=['pychubby'],
       install_requires=[
                         'click>=7.0',
+                        'dlib',
                         'matplotlib>=2.0.0',
                         'numpy>=1.16.4',
                         'opencv-python>=4.1.0.25',
