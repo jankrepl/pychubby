@@ -3,6 +3,7 @@ import pathlib
 
 import dlib
 import numpy as np
+import matplotlib.pyplot as plt
 from skimage.util import img_as_ubyte
 
 from pychubby.base import CACHE_FOLDER
@@ -83,3 +84,58 @@ def landmarks_68(img, rectangle, model_path=None):
     lm_points = np.array([[p.x, p.y] for p in original.parts()])
 
     return lm_points, original
+
+
+class LandmarkFace:
+    """Class representing a combination of a face image and its landmarks.
+
+    Parameters
+    ----------
+    points : np.ndarray
+        Array of shape `(68, 2)` where rows are different landmark points and the columns
+        are x and y coordinates.
+
+    img : np.ndarray
+        Array representing an image of a face. Any dtype and any number of channels.
+
+    """
+
+    @classmethod
+    def estimate(cls, img, model_path=None):
+        """Estimate the 68 landmarks.
+
+        Parameters
+        ----------
+        img : np.ndarray
+            Array representing an image of a face. Any dtype and any number of channels.
+
+        model_path : str or pathlib.Path, default=None
+            Path to where the pretrained model is located. If None then using
+            the `CACHE_FOLDER` model.
+
+        Attributes
+        ----------
+        shape : tuple
+            Two element tuple representing the height and width of the image.
+
+        """
+        corners, faces = face_rectangle(img)
+
+        if len(corners) != 1:
+            raise ValueError('Only possible to model one face, detected faces {}'.format(len(corners)))
+        _, face = corners[0], faces[0]
+        points, _ = landmarks_68(img, face)
+
+        return cls(points, img)
+
+    def __init__(self, points, img):
+        """Construct."""
+        self.points = points
+        self.img = img
+        self.img_shape = self.img.shape[:2]  # only first two dims matter - height and width
+
+    def plot(self, figsize=(12, 12)):
+        """Plot face together with landmarks."""
+        plt.figure(figsize=figsize)
+        plt.scatter(self.points[:, 0], self.points[:, 1], c='black')
+        plt.imshow(self.img, cmap='gray')

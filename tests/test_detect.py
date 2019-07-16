@@ -7,7 +7,8 @@ import numpy as np
 import pytest
 
 import pychubby.detect
-from pychubby.detect import face_rectangle, landmarks_68
+from pychubby.detect import LandmarkFace, face_rectangle, landmarks_68
+
 
 class TestFaceRectangle:
     """Tests of the `face_rectangle` function."""
@@ -65,3 +66,44 @@ class TestLandmarks68:
         
         assert isinstance(lm_points, np.ndarray)
         assert lm_points.shape == (68, 2)
+
+
+class TestLandmarkFaceEstimate:
+    """Tests focused on the class method `estimate` of the LandmarkFace."""
+
+    def test_incorrect_input(self, monkeypatch):
+        img = np.zeros((10, 11))
+        
+        monkeypatch.setattr('pychubby.detect.face_rectangle',
+                            lambda _: (2 * [None], 4 * [None])) 
+        with pytest.raises(ValueError):
+            LandmarkFace.estimate(img)
+
+    def test_overall(self, monkeypatch):
+        img = np.zeros((10, 11))
+        
+        monkeypatch.setattr('pychubby.detect.face_rectangle',
+                            lambda _: ([None], [None])) 
+        
+        monkeypatch.setattr('pychubby.detect.landmarks_68',
+                            lambda *args: (np.zeros((68, 2)), None))
+        
+        lf = LandmarkFace.estimate(img)
+
+        assert isinstance(lf, LandmarkFace)
+        assert lf.points.shape == (68, 2)
+        assert lf.img.shape == (10, 11)
+
+class TestLandmarkFacePlot:
+    def test_plot(self, monkeypatch):
+        mock = Mock()
+        
+        monkeypatch.setattr('pychubby.detect.plt', mock)
+
+        lf = LandmarkFace(np.zeros((68, 2)), np.zeros((12, 13)))
+        
+        lf.plot()
+        
+        mock.figure.assert_called()
+        mock.scatter.assert_called()
+        mock.imshow.assert_called()
