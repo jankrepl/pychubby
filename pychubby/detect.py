@@ -10,7 +10,7 @@ from skimage.util import img_as_ubyte
 from pychubby.base import CACHE_FOLDER
 
 
-def face_rectangle(img):
+def face_rectangle(img, n_upsamples=1):
     """Find a face rectangle.
 
     Parameters
@@ -28,13 +28,17 @@ def face_rectangle(img):
     faces : list
         Instance of ``dlib.rectagles`` that can be used in other algorithm.
 
+    n_upsamples : int
+        Upsample factor to apply to the image before detection. Allows to recognize
+        more faces.
+
     """
     if not isinstance(img, np.ndarray):
         raise TypeError('The input needs to be a np.ndarray')
 
     dlib_detector = dlib.get_frontal_face_detector()
 
-    faces = dlib_detector(img_as_ubyte(img))
+    faces = dlib_detector(img_as_ubyte(img), n_upsamples)
 
     corners = []
     for face in faces:
@@ -114,7 +118,7 @@ class LandmarkFace:
     """
 
     @classmethod
-    def estimate(cls, img, model_path=None):
+    def estimate(cls, img, model_path=None, n_upsamples=1):
         """Estimate the 68 landmarks.
 
         Parameters
@@ -126,8 +130,12 @@ class LandmarkFace:
             Path to where the pretrained model is located. If None then using
             the `CACHE_FOLDER` model.
 
+        n_upsamples : int
+            Upsample factor to apply to the image before detection. Allows to recognize
+            more faces.
+
         """
-        corners, faces = face_rectangle(img)
+        corners, faces = face_rectangle(img, n_upsamples=n_upsamples)
 
         if len(corners) != 1:
             raise ValueError('Only possible to model one face, detected faces {}'.format(len(corners)))

@@ -110,7 +110,7 @@ class TestLandmarkFaceEstimate:
         img = np.random.random((10, 11))
         
         monkeypatch.setattr('pychubby.detect.face_rectangle',
-                            lambda _: (2 * [None], 4 * [None])) 
+                lambda *args, **kwargs: (2 * [None], 4 * [None])) 
         with pytest.raises(ValueError):
             LandmarkFace.estimate(img)
 
@@ -118,7 +118,7 @@ class TestLandmarkFaceEstimate:
         img = np.random.random((10, 11))
         
         monkeypatch.setattr('pychubby.detect.face_rectangle',
-                            lambda _: ([None], [None])) 
+                            lambda *args, **kwargs: ([None], [None])) 
         
         monkeypatch.setattr('pychubby.detect.landmarks_68',
                             lambda *args: (np.random.random((68, 2)), None))
