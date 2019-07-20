@@ -4,6 +4,7 @@ import pathlib
 import dlib
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy
 from skimage.util import img_as_ubyte
 
 from pychubby.base import CACHE_FOLDER
@@ -96,7 +97,19 @@ class LandmarkFace:
         are x and y coordinates.
 
     img : np.ndarray
-        Array representing an image of a face. Any dtype and any number of channels.
+        Representing an image of a face. Any dtype and any number of channels.
+
+    rectangle : tuple
+        Two containing two tuples where the first one represents the top left corner
+        of a rectangle and the second one the bottom right corner of a rectangle.
+
+    Attributes
+    ----------
+    shape : tuple
+        Tuple representing the height and width of the image.
+
+    _convex_hull : scipy.spatial.ConvexHull
+        Convex hull of the input landmark points.
 
     """
 
@@ -113,11 +126,6 @@ class LandmarkFace:
             Path to where the pretrained model is located. If None then using
             the `CACHE_FOLDER` model.
 
-        Attributes
-        ----------
-        shape : tuple
-            Two element tuple representing the height and width of the image.
-
         """
         corners, faces = face_rectangle(img)
 
@@ -128,11 +136,29 @@ class LandmarkFace:
 
         return cls(points, img)
 
-    def __init__(self, points, img):
+    def __init__(self, points, img, rectangle=None):
         """Construct."""
+        # Checks
+        if points.shape != (68, 2):
+            raise ValueError('There needs to be 68 2D landmarks')
+
         self.points = points
         self.img = img
+        self.rectangle = rectangle
         self.img_shape = self.img.shape[:2]  # only first two dims matter - height and width
+
+        # Inner attributes
+        self._convex_hull = scipy.spatial.ConvexHull(self.points)
+
+    @property
+    def face_area(self):
+        """Area of the face."""
+        return self._convex_hull.area
+
+    @property
+    def face_volume(self):
+        """Volume  of the face in the image."""
+        return self._convex_hull.volume
 
     def plot(self, figsize=(12, 12)):
         """Plot face together with landmarks."""

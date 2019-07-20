@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import dlib
 import numpy as np
 import pytest
+import scipy
 
 import pychubby.detect
 from pychubby.detect import LandmarkFace, face_rectangle, landmarks_68
@@ -68,11 +69,45 @@ class TestLandmarks68:
         assert lm_points.shape == (68, 2)
 
 
+class TestLandmarkFaceEssentials:
+    """Tests focused on attributes and properties of the LandmarkFace class."""
+    
+    def test_constructor_wrong_input(self):
+        
+        img = np.zeros((10, 11))
+        points = np.random.random((12, 2))
+
+        with pytest.raises(ValueError):
+            LandmarkFace(points, img)
+
+    def test_onedimensional_points(self):
+        img = np.zeros((10, 11))
+        points = np.zeros((68, 2))
+
+        with pytest.raises(scipy.spatial.qhull.QhullError):
+            LandmarkFace(points, img)
+
+
+    def test_area_and_volume(self):
+        points = np.zeros((68, 2))
+        points[0, :] = [0, 0]
+        points[1, :] = [1, 1]
+        points[2, :] = [0, 1]
+        points[3, :] = [1, 0]
+        
+        img = np.zeros((10, 11))
+
+        lf = LandmarkFace(points, img)
+
+        assert lf.face_area == 4
+        assert lf.face_volume == 1
+
+
 class TestLandmarkFaceEstimate:
     """Tests focused on the class method `estimate` of the LandmarkFace."""
 
     def test_incorrect_input(self, monkeypatch):
-        img = np.zeros((10, 11))
+        img = np.random.random((10, 11))
         
         monkeypatch.setattr('pychubby.detect.face_rectangle',
                             lambda _: (2 * [None], 4 * [None])) 
@@ -80,13 +115,13 @@ class TestLandmarkFaceEstimate:
             LandmarkFace.estimate(img)
 
     def test_overall(self, monkeypatch):
-        img = np.zeros((10, 11))
+        img = np.random.random((10, 11))
         
         monkeypatch.setattr('pychubby.detect.face_rectangle',
                             lambda _: ([None], [None])) 
         
         monkeypatch.setattr('pychubby.detect.landmarks_68',
-                            lambda *args: (np.zeros((68, 2)), None))
+                            lambda *args: (np.random.random((68, 2)), None))
         
         lf = LandmarkFace.estimate(img)
 
@@ -100,7 +135,7 @@ class TestLandmarkFacePlot:
         
         monkeypatch.setattr('pychubby.detect.plt', mock)
 
-        lf = LandmarkFace(np.zeros((68, 2)), np.zeros((12, 13)))
+        lf = LandmarkFace(np.random.random((68, 2)), np.random.random((12, 13)))
         
         lf.plot()
         
