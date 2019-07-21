@@ -148,7 +148,10 @@ class LandmarkFace:
         """Construct."""
         # Checks
         if points.shape != (68, 2):
-            raise ValueError('There needs to be 68 2D landmarks')
+            raise ValueError('There needs to be 68 2D landmarks.')
+
+        if np.unique(points, axis=0).shape != (68, 2):
+            raise ValueError('There are some duplicates.')
 
         self.points = points
         self.img = img

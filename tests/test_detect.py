@@ -80,15 +80,23 @@ class TestLandmarkFaceEssentials:
         with pytest.raises(ValueError):
             LandmarkFace(points, img)
 
+    def test_duplicate_landmarks(self):
+        img = np.zeros((10, 11))
+        points = np.random.random((67, 2))
+        points = np.vstack([points, np.array([points[-1]])])
+
+        with pytest.raises(ValueError):
+            LandmarkFace(points, img)
+
     def test_onedimensional_points(self):
         img = np.zeros((10, 11))
-        points = np.zeros((68, 2))
+        points = np.stack([np.arange(68), np.arange(68)], axis=1)
 
         with pytest.raises(scipy.spatial.qhull.QhullError):
             LandmarkFace(points, img)
 
     def test_area_and_volume(self):
-        points = np.zeros((68, 2))
+        points = np.random.random((68, 2))
         points[0, :] = [0, 0]
         points[1, :] = [1, 1]
         points[2, :] = [0, 1]
