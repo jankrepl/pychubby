@@ -8,7 +8,7 @@ from pychubby.base import DisplacementField
 
 class TestConstructor:
     def test_incorrect_input_type(self):
-        delta_x = 'aa'
+        delta_x = "aa"
         delta_y = 12
 
         with pytest.raises(TypeError):
@@ -37,6 +37,90 @@ class TestConstructor:
 
         assert df.delta_x.dtype == np.float32
         assert df.delta_y.dtype == np.float32
+
+
+class TestGenerate:
+    """Tests focused on the `generate` class method."""
+
+    def test_incorrect_input(self):
+        new_points = [1, 12]
+        old_points = "a"
+
+        with pytest.raises(TypeError):
+            DisplacementField.generate((4, 5), old_points, new_points)
+
+    def test_incorrect_input_shape(self):
+        new_points = np.array([[1, 1], [2, 2]])
+        old_points = np.array([[1, 1], [2, 2], [3, 3]])
+
+        with pytest.raises(ValueError):
+            DisplacementField.generate((10, 11), old_points, new_points)
+
+    @pytest.mark.parametrize(
+        "interpolation_kwargs",
+        [
+            {"function": "cubic"},
+            {"function": "gaussian"},
+            {"function": "inverse"},
+            {"function": "linear"},
+            {"function": "multiquadric"},
+            {"function": "quintic"},
+            {"function": "thin_plate"},
+            {},
+        ],
+    )
+    @pytest.mark.parametrize(
+        "anchor_corners", [True, False], ids=["do_anchor", "dont_anchor"]
+    )
+    def test_identity(self, anchor_corners, interpolation_kwargs):
+        """Specifying identical old and new points leads to identity."""
+        shape = (12, 13)
+        old_points = np.array([[1, 8], [10, 10], [5, 2]])
+        new_points = old_points
+        df = DisplacementField.generate(
+            shape,
+            old_points,
+            new_points,
+            anchor_corners=anchor_corners,
+            **interpolation_kwargs
+        )
+        print(df.delta_x.mean())
+        assert np.all(df.delta_x == 0)
+        assert np.all(df.delta_y == 0)
+
+    @pytest.mark.parametrize(
+        "interpolation_kwargs",
+        [
+            {"function": "cubic"},
+            {"function": "gaussian"},
+            {"function": "inverse"},
+            {"function": "linear"},
+            {"function": "multiquadric"},
+            {"function": "quintic"},
+            {"function": "thin_plate"},
+            {},
+        ],
+    )
+    @pytest.mark.parametrize(
+        "anchor_corners", [True, False], ids=["do_anchor", "dont_anchor"]
+    )
+    def test_interpolation_on_nodes(self, anchor_corners, interpolation_kwargs):
+        """Make sure that the transformation on the landmarks are precise."""
+        shape = (20, 30)
+        old_points = np.array([[7, 7], [7, 14], [14, 7], [14, 14]])
+        new_points = old_points.copy() + np.random.randint(-3, 3, size=(4, 2))
+
+        df = DisplacementField.generate(
+            shape,
+            old_points,
+            new_points,
+            anchor_corners=anchor_corners,
+            **interpolation_kwargs
+        )
+
+        for new_p, old_p in zip(new_points, old_points):
+            assert df.delta_x[new_p[1], new_p[0]] == pytest.approx(old_p[0] - new_p[0])
+            assert df.delta_y[new_p[1], new_p[0]] == pytest.approx(old_p[1] - new_p[1])
 
 
 class TestProperties:

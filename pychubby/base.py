@@ -3,6 +3,7 @@
 import pathlib
 
 import numpy as np
+import scipy
 
 CACHE_FOLDER = pathlib.Path.home() / '.pychubby/'
 
@@ -11,6 +12,75 @@ CACHE_FOLDER.mkdir(parents=True, exist_ok=True)
 
 class DisplacementField:
     """Represents a coordinate transformation."""
+
+    @classmethod
+    def generate(cls, shape, old_points, new_points, anchor_corners=True, **interpolation_kwargs):
+        """Create a displacement field based on old and new landmark points.
+
+        Parameters
+        ----------
+        shape : tuple
+            Tuple representing the height and the width of the displacement field.
+
+        old_points : np.ndarray
+            Array of shape `(N, 2)` representing the x and y coordinates of the
+            old landmark points.
+
+        new_points : np.ndarray
+            Array of shape `(N, 2)` representing the x and y coordinates of the
+            new landmark points.
+
+        anchor_corners : bool
+            If True, then assumed that the 4 corners of the image correspond.
+
+        interpolation_kwargs : dict
+            Additional parameters related to the interpolation.
+
+        Returns
+        -------
+        df : DisplacementField
+            DisplacementField instance representing the transformation that
+            allows for warping the old image with old landmarks into the new
+            coordinate space.
+
+        """
+        if not (isinstance(old_points, np.ndarray) and isinstance(new_points, np.ndarray)):
+            raise TypeError("The old and new points need to be numpy arrays.")
+
+        if old_points.shape != new_points.shape:
+            raise ValueError("The old and new points do not have the same dimensions.")
+
+        points_delta_x = old_points[:, 0] - new_points[:, 0]
+        points_delta_y = old_points[:, 1] - new_points[:, 1]
+
+        if anchor_corners:
+            corners = np.array([[0, 0],
+                                [0, shape[0] - 1],
+                                [shape[1] - 1, 0],
+                                [shape[1] - 1, shape[0] - 1]])
+            new_points = np.vstack([new_points, corners])
+            old_points = np.vstack([old_points, corners])
+            points_delta_x = np.concatenate([points_delta_x, [0, 0, 0, 0]])
+            points_delta_y = np.concatenate([points_delta_y, [0, 0, 0, 0]])
+
+        # Prepare kwargs
+        if not interpolation_kwargs:
+            interpolation_kwargs = {'function': 'linear'}
+
+        # Fitting
+        rbf_x = scipy.interpolate.Rbf(new_points[:, 0], new_points[:, 1], points_delta_x,
+                                      **interpolation_kwargs)
+        rbf_y = scipy.interpolate.Rbf(new_points[:, 0], new_points[:, 1], points_delta_y,
+                                      **interpolation_kwargs)
+
+        # Prediction
+        x_grid, y_grid = np.meshgrid(range(shape[1]), range(shape[0]))
+        x_grid_r, y_grid_r = x_grid.ravel(), y_grid.ravel()
+
+        delta_x = rbf_x(x_grid_r, y_grid_r).reshape(shape)
+        delta_y = rbf_y(x_grid_r, y_grid_r).reshape(shape)
+
+        return cls(delta_x, delta_y)
 
     def __init__(self, delta_x, delta_y):
         """Construct."""
