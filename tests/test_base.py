@@ -157,3 +157,19 @@ class TestProperties:
 
         assert np.all(tf_x == transformation_x)
         assert np.all(tf_y == transformation_y)
+
+
+class TestWarp:
+    """Collection of tests focused on the "warp" method."""
+
+    @pytest.mark.parametrize('order', [0, 1, 2])
+    def test_identity_transformation(self, face_img, order):
+        shape = face_img.shape[:2]
+        delta_x = np.zeros(shape)
+        delta_y = np.zeros(shape)
+
+        df = DisplacementField(delta_x, delta_y)
+        warped_img = df.warp(face_img, order)
+
+        assert np.allclose(warped_img, face_img)
+        assert warped_img.dtype == face_img.dtype

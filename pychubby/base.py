@@ -2,6 +2,7 @@
 
 import pathlib
 
+import cv2
 import numpy as np
 import scipy
 
@@ -107,7 +108,32 @@ class DisplacementField:
     def transformation(self):
         """Compute actual transformation rather then displacements."""
         x, y = np.meshgrid(range(self.shape[1]), range(self.shape[0]))
-        transformation_x = self.delta_x + x
-        transformation_y = self.delta_y + y
+        transformation_x = self.delta_x + x.astype('float32')
+        transformation_y = self.delta_y + y.astype('float32')
 
         return transformation_x, transformation_y
+
+    def warp(self, img, order=1):
+        """Warp image into new coordinate system.
+
+        Parameters
+        ----------
+        img : np.ndarray
+            Image to be warped. Any number of channels and dtype either uint8 or float32.
+
+        order : int
+            Interpolation order.
+                * 0 - nearest neigbours
+                * 1 - linear
+                * 2 - cubic
+
+        Returns
+        -------
+        warped_img : np.ndarray
+            Warped image. The same number of channels and same dtype as the `img`.
+
+        """
+        tform_x, tform_y = self.transformation
+        warped_img = cv2.remap(img, tform_x, tform_y, order)
+
+        return warped_img
