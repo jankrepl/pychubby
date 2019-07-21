@@ -93,6 +93,8 @@ class DisplacementField:
         if delta_x.shape != delta_y.shape:
             raise ValueError('The shapes of deltas need to be equal')
 
+        self.shape = delta_x.shape
+
         self.delta_x = delta_x.astype(np.float32)
         self.delta_y = delta_y.astype(np.float32)
 
@@ -100,3 +102,12 @@ class DisplacementField:
     def is_valid(self):
         """Check whether both delta_x and delta_y finite."""
         return np.all(np.isfinite(self.delta_x)) and np.all(np.isfinite(self.delta_y))
+
+    @property
+    def transformation(self):
+        """Compute actual transformation rather then displacements."""
+        x, y = np.meshgrid(range(self.shape[1]), range(self.shape[0]))
+        transformation_x = self.delta_x + x
+        transformation_y = self.delta_y + y
+
+        return transformation_x, transformation_y

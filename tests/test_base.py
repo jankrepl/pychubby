@@ -140,3 +140,20 @@ class TestProperties:
         assert df_val.is_valid
         assert not df_inv_1.is_valid
         assert not df_inv_2.is_valid
+
+    def test_transformation(self):
+
+        delta_x = np.zeros((2, 3))
+        delta_y = np.zeros((2, 3))
+
+        transformation_x = np.array([[0, 1, 2],
+                                     [0, 1, 2]])
+        transformation_y = np.array([[0, 0, 0],
+                                     [1, 1, 1]])
+
+        df = DisplacementField(delta_x, delta_y)
+
+        tf_x, tf_y = df.transformation
+
+        assert np.all(tf_x == transformation_x)
+        assert np.all(tf_y == transformation_y)
