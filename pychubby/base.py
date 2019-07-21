@@ -105,6 +105,11 @@ class DisplacementField:
         return np.all(np.isfinite(self.delta_x)) and np.all(np.isfinite(self.delta_y))
 
     @property
+    def norm(self):
+        """Compute per element euclidean norm."""
+        return np.sqrt(np.square(self.delta_x) + np.square(self.delta_y))
+
+    @property
     def transformation(self):
         """Compute actual transformation rather then displacements."""
         x, y = np.meshgrid(range(self.shape[1]), range(self.shape[0]))

@@ -141,6 +141,16 @@ class TestProperties:
         assert not df_inv_1.is_valid
         assert not df_inv_2.is_valid
 
+    def test_norm(self):
+
+        shape = (2, 3)
+        delta_x = np.ones(shape) * 3
+        delta_y = np.ones(shape) * 4
+
+        df = DisplacementField(delta_x, delta_y)
+
+        assert np.allclose(df.norm, np.ones(shape) * 5)
+
     def test_transformation(self):
 
         delta_x = np.zeros((2, 3))
