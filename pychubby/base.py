@@ -99,6 +99,82 @@ class DisplacementField:
         self.delta_x = delta_x.astype(np.float32)
         self.delta_y = delta_y.astype(np.float32)
 
+    def __eq__(self, other):
+        """Elementwise equality of displacements.
+
+        Parameters
+        ----------
+        other : DisplacementField
+            Another instance of ``DisplacementField``.
+
+        Returns
+        -------
+        bool
+            True if elementwise equal.
+
+        """
+        return np.allclose(self.delta_x, other.delta_x) and np.allclose(self.delta_y, other.delta_y)
+
+    def __mul__(self, other):
+        """Multiply with a constant from the right.
+
+        Parameters
+        ----------
+        other : int or float
+            Constant to multiply the displacements with.
+
+        Returns
+        -------
+        DisplacemntField
+            Scaled instance of ``DisplacementField``.
+
+        """
+        if not isinstance(other, (int, float)):
+            raise TypeError('The constant needs to be a single number')
+
+        delta_x_scaled = self.delta_x * other
+        delta_y_scaled = self.delta_y * other
+
+        return DisplacementField(delta_x_scaled, delta_y_scaled)
+
+    def __rmul__(self, other):
+        """Multiply with a constant from the left.
+
+        Parameters
+        ----------
+        other : int or float
+            Constant to multiply the displacements with.
+
+        Returns
+        -------
+        DisplacemntField
+            Scaled instance of ``DisplacementField``.
+
+        """
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        """Divide by a constant.
+
+        Parameters
+        ----------
+        other : int or float
+            Constant to divide the displacements by.
+
+        Returns
+        -------
+        DisplacemntField
+            Scaled instance of ``DisplacementField``.
+
+        """
+        if not isinstance(other, (int, float)):
+            raise TypeError('The constant needs to be a single number')
+
+        delta_x_scaled = self.delta_x / other
+        delta_y_scaled = self.delta_y / other
+
+        return DisplacementField(delta_x_scaled, delta_y_scaled)
+
     @property
     def is_valid(self):
         """Check whether both delta_x and delta_y finite."""

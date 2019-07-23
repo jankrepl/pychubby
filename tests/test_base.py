@@ -39,6 +39,18 @@ class TestConstructor:
         assert df.delta_y.dtype == np.float32
 
 
+class TestEquality:
+    """Test that __eq__ works."""
+
+    def test_itself(self):
+        delta_x = np.ones((10, 12)) * 1.9
+        delta_y = np.ones((10, 12)) * 1.2
+
+        df = DisplacementField(delta_x, delta_y)
+
+        assert df == df
+
+
 class TestGenerate:
     """Tests focused on the `generate` class method."""
 
@@ -121,6 +133,39 @@ class TestGenerate:
         for new_p, old_p in zip(new_points, old_points):
             assert df.delta_x[new_p[1], new_p[0]] == pytest.approx(old_p[0] - new_p[0])
             assert df.delta_y[new_p[1], new_p[0]] == pytest.approx(old_p[1] - new_p[1])
+
+
+class TestMulAndDiv:
+    """Tests focus on the __mul__, __truediv__ and __rmul__ dunders."""
+
+    @pytest.mark.parametrize('inp', ['a', [1, 2]])
+    def test_incorrect_type(self, inp):
+        delta_x = np.ones((10, 12)) * 3
+        delta_y = np.ones((10, 12)) * 2
+        df = DisplacementField(delta_x, delta_y)
+
+        with pytest.raises(TypeError):
+            df * inp
+
+        with pytest.raises(TypeError):
+            inp * df
+
+        with pytest.raises(TypeError):
+            df / inp
+
+    def test_works(self):
+        delta_x = np.ones((10, 12)) * 3
+        delta_y = np.ones((10, 12)) * 2
+
+        delta_x_true = np.ones((10, 12)) * 6
+        delta_y_true = np.ones((10, 12)) * 4
+
+        df = DisplacementField(delta_x, delta_y)
+        df_true = DisplacementField(delta_x_true, delta_y_true)
+
+        assert df * 2 == df_true
+        assert 2 * df == df_true
+        assert df_true / 2 == df
 
 
 class TestProperties:
