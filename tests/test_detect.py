@@ -1,6 +1,7 @@
 """Collection of tests focused on the `detect` module."""
 from collections import namedtuple
 from unittest.mock import Mock
+import math
 
 import dlib
 import numpy as np
@@ -69,6 +70,27 @@ class TestLandmarks68:
         assert lm_points.shape == (68, 2)
 
 
+class TestLandmarkFaceAngle:
+    """Collection of tests focused on the `angle` method."""
+
+    def test_identical(self):
+        lf = LandmarkFace(np.random.random((68, 2)), np.zeros((12, 13)))
+
+        for i in range(68):
+            for j in range(68):
+                ref_vector = lf.points[j] - lf.points[i]
+                assert lf.angle(i, j, reference_vector=ref_vector) == 0
+
+    def test_rad2deg(self):
+        lf = LandmarkFace(np.random.random((68, 2)), np.zeros((12, 13)))
+
+        for i in range(68):
+            for j in range(68):
+                res_rad = lf.angle(i, j, use_radians=True)
+                res_deg = lf.angle(i, j)
+                assert math.degrees(res_rad) == res_deg
+
+
 class TestLandmarkFaceEssentials:
     """Tests focused on attributes and properties of the LandmarkFace class."""
 
@@ -135,6 +157,26 @@ class TestLandmarkFaceEstimate:
         assert isinstance(lf, LandmarkFace)
         assert lf.points.shape == (68, 2)
         assert lf.img.shape == (10, 11)
+
+
+class TestLandmakrFaceEuclideanDistance:
+    """Collection of tests focused on the `euclidean_distance` method."""
+
+    def test_identical(self):
+        lf = LandmarkFace(np.random.random((68, 2)), np.zeros((12, 13)))
+
+        for lix in range(68):
+            assert lf.euclidean_distance(lix, lix) == 0
+
+    def test_precise_value(self):
+        points = np.random.random((68, 2))
+        points[0] = [2, 3]
+        points[1] = [5, 7]
+
+        lf = LandmarkFace(points, np.zeros((12, 13)))
+
+        assert lf.euclidean_distance(0, 1) == 5
+        assert lf.euclidean_distance(1, 0) == 5
 
 
 class TestLandmarkFacePlot:

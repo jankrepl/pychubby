@@ -1,4 +1,5 @@
 """Collection of detection algorithms."""
+import math
 import pathlib
 
 import dlib
@@ -170,6 +171,64 @@ class LandmarkFace:
     def face_volume(self):
         """Volume  of the face in the image."""
         return self._convex_hull.volume
+
+    def angle(self, landmark_1, landmark_2, reference_vector=None, use_radians=False):
+        """Angle between two landmarks and positive part of the x axis.
+
+        The possible values range from (-180, 180) in degrees.
+
+        Parameters
+        ----------
+        landmark_1 : int
+            An integer from [0,57] representing a landmark point. The start
+            of the vector.
+
+        landmark_2 : int
+            An integer from [0,57] representing a landmark point. The end
+            of the vector.
+
+        reference_vector : None or tuple
+            If None, then positive part of the x axis used (1, 0). Otherwise
+            specified by the user.
+
+        use_radians : bool
+            If True, then radians used. Otherwise degrees.
+
+        Returns
+        -------
+        angle : float
+            The angle between the two landmarks and positive part of the x axis.
+
+        """
+        v_1 = np.array([1, 0]) if reference_vector is None else np.array(reference_vector)
+        v_2 = self.points[landmark_2] - self.points[landmark_1]
+
+        res_radians = math.atan2(v_1[0] * v_2[1] - v_1[1] * v_2[0], v_1[0] * v_2[0] + v_1[1] * v_2[1])
+
+        if use_radians:
+            return res_radians
+        else:
+            return math.degrees(res_radians)
+
+    def euclidean_distance(self, landmark_1, landmark_2):
+        """Euclidean distance between 2 landmarks.
+
+        Parameters
+        ----------
+        landmark_1 : int
+            An integer from [0,57] representing a landmark point.
+
+        landmark_2 : int
+            An integer from [0,57] representing a landmark point.
+
+
+        Returns
+        -------
+        dist : float
+            Euclidean distance between `landmark_1` and `landmark_2`.
+
+        """
+        return np.linalg.norm(self.points[landmark_1] - self.points[landmark_2])
 
     def plot(self, figsize=(12, 12)):
         """Plot face together with landmarks."""
