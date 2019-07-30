@@ -9,7 +9,14 @@ import pytest
 import scipy
 
 import pychubby.detect
-from pychubby.detect import LandmarkFace, face_rectangle, landmarks_68
+from pychubby.detect import LANDMARK_NAMES, LandmarkFace, face_rectangle, landmarks_68
+
+
+class TestLandmarkNames:
+    """Tests focused on the `LANDMARK_NAMES` dictionary."""
+    def test_unique(self):
+        assert len(set(LANDMARK_NAMES.keys())) == 68
+        assert len(set(LANDMARK_NAMES.values())) == 68
 
 
 class TestFaceRectangle:
