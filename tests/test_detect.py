@@ -186,6 +186,57 @@ class TestLandmakrFaceEuclideanDistance:
         assert lf.euclidean_distance(1, 0) == 5
 
 
+class TestLandmarkFaceGetItem:
+    """Collection of tests focused on the `__get_item__` method."""
+
+    def test_with_int(self):
+        random_state = 2
+        np.random.seed(random_state)
+
+        points = np.random.random((68, 2))
+        lf = LandmarkFace(points, np.zeros((12, 13)))
+
+        # one by one
+        for i in range(68):
+            assert np.allclose(lf[i], points[i])
+        # random list of indices
+        ixs = np.random.randint(0, 68, size=10)
+
+        assert np.allclose(lf[ixs], points[ixs])
+        assert np.allclose(lf[[x.item() for x in ixs]], points[ixs])
+
+    def test_with_str(self):
+        random_state = 2
+        np.random.seed(random_state)
+
+        ix2name = {v: k for k, v in LANDMARK_NAMES.items()}
+
+        points = np.random.random((68, 2))
+        lf = LandmarkFace(points, np.zeros((12, 13)))
+
+        # one by one
+        for i in range(68):
+            assert np.allclose(lf[ix2name[i]], points[i])
+        # random list of indices
+        ixs = np.random.randint(0, 68, size=10)
+        strings = [ix2name[x] for x in ixs]
+
+        assert np.allclose(lf[strings], points[ixs])
+
+    def test_incorrect_input(self):
+        points = np.random.random((68, 2))
+        lf = LandmarkFace(points, np.zeros((12, 13)))
+
+        with pytest.raises(TypeError):
+            lf[(1, 2)]
+
+        with pytest.raises(TypeError):
+            lf[[32.1]]
+
+        with pytest.raises(ValueError):
+            lf[np.zeros((2, 2))]
+
+
 class TestLandmarkFacePlot:
     def test_plot(self, monkeypatch):
         mock = Mock()

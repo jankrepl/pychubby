@@ -239,6 +239,35 @@ class LandmarkFace:
         # Inner attributes
         self._convex_hull = scipy.spatial.ConvexHull(self.points)
 
+    def __getitem__(self, val):
+        """Return a corresponding coordinate.
+
+        Supports both integer and string indexing.
+
+        """
+        if isinstance(val, (int, slice)):
+            return self.points[val]
+
+        elif isinstance(val, list):
+            if np.all([isinstance(x, int) for x in val]):
+                return self.points[val]
+            elif np.all([isinstance(x, str) for x in val]):
+                ixs = [LANDMARK_NAMES[x] for x in val]
+                return self.points[ixs]
+            else:
+                raise TypeError('All elements must be either int or str')
+
+        elif isinstance(val, np.ndarray):
+            if val.ndim > 1:
+                raise ValueError('Only 1D arrays allowed')
+            return self.points[val]
+
+        elif isinstance(val, str):
+            return self.points[LANDMARK_NAMES[val]]
+
+        else:
+            raise TypeError('Unsupported type {}'.format(type(val)))
+
     @property
     def face_area(self):
         """Area of the face."""
