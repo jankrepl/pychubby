@@ -5,7 +5,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from pychubby.base import DisplacementField
-from pychubby.detect import LandmarkFace
+from pychubby.detect import LANDMARK_NAMES, LandmarkFace
+from pychubby.reference import DefaultRS
 
 
 class Action(ABC):
@@ -127,3 +128,63 @@ class AbsoluteMove(Action):
         new_lf, df = self.pts2inst(new_points, lf)
 
         return new_lf, df
+
+
+class Lambda(Action):
+    """Custom action for specifying actions with angles and norms in a reference space.
+
+    Parameters
+    ----------
+    scale : float
+        Absolute norm of the maximum shift. All the remaining shifts are scaled linearly.
+
+    specs : dict
+        Dictionary where keyrs represent either the index or a name of the landmark.
+        The values are tuples of two elements:
+            1) Angle in degrees.
+            2) Proportional shift. Only the relative size towards other landmarks matters.
+
+    reference_space : None or ReferenceSpace
+        Reference space to be used.
+
+    """
+
+    def __init__(self, scale, specs, reference_space=None):
+        """Construct."""
+        self.scale = scale
+        self.specs = specs
+        self.reference_space = reference_space or DefaultRS()
+
+    def perform(self, lf):
+        """Perform action.
+
+        Parameters
+        ----------
+        new_lf : LandmarkFace
+            Instance of a ``LandmarkFace`` after taking the action.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        self.reference_space.estimate(lf)
+        ref_points = self.reference_space.inp2ref(lf.points)
+
+        # Create entry for AbsoluteMove
+        x_shifts = {}
+        y_shifts = {}
+
+        for k, (angle, prop) in self.specs.items():
+            key = k if isinstance(k, int) else LANDMARK_NAMES[k]
+
+            ref_shift = np.array([[np.cos(np.radians(angle)), np.sin(np.radians(angle))]]) * prop * self.scale
+            new_inp_point = self.reference_space.ref2inp(ref_points[key] + ref_shift)[0]
+            shift = new_inp_point - lf.points[key]
+
+            x_shifts[key] = shift[0]
+            y_shifts[key] = shift[1]
+
+        am = AbsoluteMove(x_shifts=x_shifts,
+                          y_shifts=y_shifts)
+
+        return am.perform(lf)

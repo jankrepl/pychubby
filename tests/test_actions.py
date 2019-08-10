@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from pychubby.actions import Action, AbsoluteMove
+from pychubby.actions import Action, AbsoluteMove, Lambda
 from pychubby.base import DisplacementField
 from pychubby.detect import LandmarkFace
 
@@ -76,3 +76,25 @@ class TestAbsoluteMove:
                 assert np.allclose(new_points[i], old_points[i] + np.array([0, 5]))
             else:
                 assert np.allclose(new_points[i], old_points[i])
+
+
+class TestLambda:
+    """Collection of tests focused on the ``Lambda`` action."""
+
+    def test_noop(self, random_lf):
+
+        a = Lambda(0.5, {})
+
+        new_lf, df = a.perform(random_lf)
+
+        assert np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+        assert np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+    def test_simple(self, random_lf):
+
+        a = Lambda(0.5, {'CHIN': (90, 2)})
+
+        new_lf, df = a.perform(random_lf)
+
+        assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+        assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
