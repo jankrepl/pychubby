@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+from skimage.transform import AffineTransform
 
 from pychubby.base import DisplacementField
 from pychubby.detect import LANDMARK_NAMES, LandmarkFace
@@ -160,6 +161,11 @@ class Lambda(Action):
 
         Parameters
         ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace`` before taking the action.
+
+        Returns
+        -------
         new_lf : LandmarkFace
             Instance of a ``LandmarkFace`` after taking the action.
 
@@ -230,3 +236,80 @@ class Chubbify(Action):
                 }
 
         return Lambda(self.scale, specs).perform(lf)
+
+
+class LinearTransform(Action):
+    """Linear transformation.
+
+    Parameters
+    ----------
+    scale_x : float
+        Scaling of the x axis.
+
+    scale_y : float
+        Scaling of the y axis.
+
+    rotation : float
+        Rotation in radians.
+
+    shear : float
+        Shear in radians.
+
+    translation_x : float
+        Translation in the x direction.
+
+    translation_y : float
+        Translation in the y direction.
+
+    reference_space : None or pychubby.reference.ReferenceSpace
+        Instace of the ``ReferenceSpace`` class.
+
+    """
+
+    def __init__(self, scale_x=1, scale_y=1, rotation=0, shear=0, translation_x=0, translation_y=0,
+                 reference_space=None):
+        """Construct."""
+        self.scale_x = scale_x
+        self.scale_y = scale_y
+        self.rotation = rotation
+        self.shear = shear
+        self.translation_x = translation_x
+        self.translation_y = translation_y
+        self.reference_space = reference_space or DefaultRS()
+
+    def perform(self, lf):
+        """Perform action.
+
+        Parameters
+        ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace`` before taking the action.
+
+        Returns
+        -------
+        new_lf : LandmarkFace
+            Instance of a ``LandmarkFace`` after taking the action.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        # estimate reference space
+        self.reference_space.estimate(lf)
+
+        # transform reference space landmarks
+        ref_points = self.reference_space.inp2ref(lf.points)
+
+        tform = AffineTransform(scale=(self.scale_x, self.scale_y),
+                                rotation=self.rotation,
+                                shear=self.shear,
+                                translation=(self.translation_x, self.translation_y))
+        tformed_ref_points = tform(ref_points)
+
+        # ref2inp
+        tformed_inp_points = self.reference_space.ref2inp(tformed_ref_points)
+
+        x_shifts = {i: (tformed_inp_points[i] - lf[i])[0] for i in range(68)}
+        y_shifts = {i: (tformed_inp_points[i] - lf[i])[1] for i in range(68)}
+
+        return AbsoluteMove(x_shifts=x_shifts, y_shifts=y_shifts).perform(lf)

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from pychubby.actions import Action, AbsoluteMove, Chubbify, Lambda
+from pychubby.actions import Action, AbsoluteMove, Chubbify, Lambda, LinearTransform
 from pychubby.base import DisplacementField
 from pychubby.detect import LandmarkFace
 
@@ -114,3 +114,21 @@ class TestChubbify:
         else:
             assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
             assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+
+class TestLinearTransform:
+    """Collection of tests focused on the ``LinearTransform`` action."""
+
+    def test_noop(self, random_lf):
+        a = LinearTransform()
+        new_lf, df = a.perform(random_lf)
+
+        assert np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+        assert np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+    def test_simple(self, random_lf):
+        a = LinearTransform(translation_x=1)
+        new_lf, df = a.perform(random_lf)
+
+        assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+        assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
