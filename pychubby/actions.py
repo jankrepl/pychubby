@@ -313,3 +313,46 @@ class LinearTransform(Action):
         y_shifts = {i: (tformed_inp_points[i] - lf[i])[1] for i in range(68)}
 
         return AbsoluteMove(x_shifts=x_shifts, y_shifts=y_shifts).perform(lf)
+
+
+class Smile(Action):
+    """Make a smiling face.
+
+    Parameters
+    ----------
+    scale : float
+        Absolute shift size in the reference space.
+
+    """
+
+    def __init__(self, scale=0.1):
+        """Construct."""
+        self.scale = scale
+
+    def perform(self, lf):
+        """Perform action.
+
+        Parameters
+        ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace`` before taking the action.
+
+        Returns
+        -------
+        new_lf : LandmarkFace
+            Instance of a ``LandmarkFace`` after taking the action.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        specs = {
+                'OUTSIDE_MOUTH_CORNER_L': (-110, 1),
+                'OUTSIDE_MOUTH_CORNER_R': (-70, 1),
+                'INSIDE_MOUTH_CORNER_L': (-110, 0.8),
+                'INSIDE_MOUTH_CORNER_R': (-70, 0.8),
+                'OUTER_OUTSIDE_UPPER_LIP_L': (-100, 0.3),
+                'OUTER_OUTSIDE_UPPER_LIP_R': (-80, 0.3),
+                 }
+
+        return Lambda(self.scale, specs).perform(lf)
