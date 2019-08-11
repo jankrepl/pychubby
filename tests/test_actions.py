@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from pychubby.actions import Action, AbsoluteMove, Lambda
+from pychubby.actions import Action, AbsoluteMove, Chubbify, Lambda
 from pychubby.base import DisplacementField
 from pychubby.detect import LandmarkFace
 
@@ -98,3 +98,19 @@ class TestLambda:
 
         assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
         assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+
+class TestChubbify:
+    """Collection of tests focused on the ``Chubbify`` action."""
+
+    @pytest.mark.parametrize('scale', (0.2, 0.4, 1, 0))
+    def test_simple(self, random_lf, scale):
+        a = Chubbify(scale)
+        new_lf, df = a.perform(random_lf)
+
+        if scale == 0:
+            assert np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+        else:
+            assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))

@@ -188,3 +188,45 @@ class Lambda(Action):
                           y_shifts=y_shifts)
 
         return am.perform(lf)
+
+
+class Chubbify(Action):
+    """Make a chubby face.
+
+    Parameters
+    ----------
+    scale : float
+        Absolute shift size in the reference space.
+
+    """
+
+    def __init__(self, scale=0.2):
+        """Construct."""
+        self.scale = scale
+
+    def perform(self, lf):
+        """Perform an action.
+
+        Parameters
+        ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace``.
+
+        """
+        specs = {
+                 'LOWER_TEMPLE_L': (170, 0.4),
+                 'LOWER_TEMPLE_R': (10, 0.4),
+                 'UPPERMOST_CHEEK_L': (160, 1),
+                 'UPPERMOST_CHEEK_R': (20, 1),
+                 'UPPER_CHEEK_L': (150, 1),
+                 'UPPER_CHEEK_R': (30, 1),
+                 'LOWER_CHEEK_L': (140, 1),
+                 'LOWER_CHEEK_R': (40, 1),
+                 'LOWERMOST_CHEEK_L': (130, 0.8),
+                 'LOWERMOST_CHEEK_R': (50, 0.8),
+                 'CHIN_L': (120, 0.7),
+                 'CHIN_R': (60, 0.7),
+                 'CHIN': (90, 0.7)
+                }
+
+        return Lambda(self.scale, specs).perform(lf)
