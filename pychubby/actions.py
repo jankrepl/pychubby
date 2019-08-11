@@ -315,6 +315,60 @@ class LinearTransform(Action):
         return AbsoluteMove(x_shifts=x_shifts, y_shifts=y_shifts).perform(lf)
 
 
+class OpenEyes(Action):
+    """Open eyes.
+
+    Parameters
+    ----------
+    scale : float
+        Absolute shift size in the reference space.
+
+    """
+
+    def __init__(self, scale):
+        """Construct."""
+        self.scale = scale
+
+    def perform(self, lf):
+        """Perform action.
+
+        Parameters
+        ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace`` before taking the action.
+
+        Returns
+        -------
+        new_lf : LandmarkFace
+            Instance of a ``LandmarkFace`` after taking the action.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        specs = {
+                 'INNER_EYE_LID_R': (-100, 0.8),
+                 'OUTER_EYE_LID_R': (-80, 1),
+                 'INNER_EYE_BOTTOM_R': (100, 0.5),
+                 'OUTER_EYE_BOTTOM_R': (80, 0.5),
+                 'INNERMOST_EYEBROW_R': (-100, 1),
+                 'INNER_EYEBROW_R': (-100, 1),
+                 'MIDDLE_EYEBROW_R': (-100, 1),
+                 'OUTER_EYEBROW_R': (-100, 1),
+                 'OUTERMOST_EYEBROW_R': (-100, 1),
+                 'INNER_EYE_LID_L': (-80, 0.8),
+                 'OUTER_EYE_LID_L': (-100, 1),
+                 'INNER_EYE_BOTTOM_L': (80, 0.5),
+                 'OUTER_EYE_BOTTOM_L': (10, 0.5),
+                 'INNERMOST_EYEBROW_L': (-80, 1),
+                 'INNER_EYEBROW_L': (-80, 1),
+                 'MIDDLE_EYEBROW_L': (-80, 1),
+                 'OUTER_EYEBROW_L': (-80, 1),
+                 'OUTERMOST_EYEBROW_L': (-80, 1)
+                }
+        return Lambda(self.scale, specs=specs).perform(lf)
+
+
 class Smile(Action):
     """Make a smiling face.
 
