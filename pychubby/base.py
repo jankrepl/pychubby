@@ -99,6 +99,29 @@ class DisplacementField:
         self.delta_x = delta_x.astype(np.float32)
         self.delta_y = delta_y.astype(np.float32)
 
+    def __call__(self, other):
+        """Composition.
+
+        Parameters
+        ----------
+        other : DisplacementField
+            Another instance of ``DisplacementField``. Represents the inner transformation.
+
+        Returns
+        -------
+        composition : DisplacementField
+            Composition of `self` (outer transformation) and `other` (inner transformation).
+
+        """
+        shape = other.delta_x.shape
+        t_x_outer, t_y_outer = self.transformation
+        x, y = np.meshgrid(range(shape[1]), range(shape[0]))
+
+        delta_x_comp = other.warp(t_x_outer) - x
+        delta_y_comp = other.warp(t_y_outer) - y
+
+        return self.__class__(delta_x_comp, delta_y_comp)
+
     def __eq__(self, other):
         """Elementwise equality of displacements.
 
@@ -113,7 +136,10 @@ class DisplacementField:
             True if elementwise equal.
 
         """
-        return np.allclose(self.delta_x, other.delta_x) and np.allclose(self.delta_y, other.delta_y)
+        delta_x_equal = np.allclose(self.delta_x, other.delta_x)
+        delta_y_equal = np.allclose(self.delta_y, other.delta_y)
+
+        return delta_x_equal and delta_y_equal
 
     def __mul__(self, other):
         """Multiply with a constant from the right.

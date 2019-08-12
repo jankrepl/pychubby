@@ -39,6 +39,17 @@ class TestConstructor:
         assert df.delta_y.dtype == np.float32
 
 
+class TestCall:
+    """Collection of tests focused on the `__call__` method."""
+
+    def test_identity(self):
+        delta = np.zeros((11, 12))
+
+        df = DisplacementField(delta, delta)
+
+        assert df == df(df)
+
+
 class TestEquality:
     """Test that __eq__ works."""
 
