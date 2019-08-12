@@ -369,6 +369,53 @@ class OpenEyes(Action):
         return Lambda(self.scale, specs=specs).perform(lf)
 
 
+class Pipeline(Action):
+    """Pipe multiple actions together.
+
+    Parameters
+    ----------
+    steps : list
+        List of different actions that are going to be performed in the given order.
+
+    """
+
+    def __init__(self, steps):
+        """Construct."""
+        self.steps = steps
+
+    def perform(self, lf):
+        """Perform action.
+
+        Parameters
+        ----------
+        lf : LandmarkFace
+            Instance of a ``LandmarkFace`` before taking the action.
+
+        Returns
+        -------
+        new_lf : LandmarkFace
+            Instance of a ``LandmarkFace`` after taking the action.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        df_list = []
+        lf_composed = lf
+
+        for a in self.steps:
+            lf_composed, df_temp = a.perform(lf_composed)
+            df_list.append(df_temp)
+
+        df_list = df_list[::-1]
+
+        df_composed = df_list[0]
+        for df_temp in df_list[1:]:
+            df_composed = df_composed(df_temp)
+
+        return lf_composed, df_composed
+
+
 class Smile(Action):
     """Make a smiling face.
 
