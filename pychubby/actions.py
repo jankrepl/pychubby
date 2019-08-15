@@ -62,7 +62,7 @@ class Action(ABC):
         if not interpolation_kwargs:
             interpolation_kwargs = {'function': 'linear'}
 
-        df = DisplacementField.generate(lf.img.shape,
+        df = DisplacementField.generate(lf.img.shape[:2],
                                         lf.points,
                                         new_points,
                                         anchor_edges=True,

@@ -51,6 +51,9 @@ class DisplacementField:
         if old_points.shape != new_points.shape:
             raise ValueError("The old and new points do not have the same dimensions.")
 
+        if len(shape) != 2:
+            raise ValueError("Shape has to be 2 dimensional.")
+
         points_delta_x = old_points[:, 0] - new_points[:, 0]
         points_delta_y = old_points[:, 1] - new_points[:, 1]
 
