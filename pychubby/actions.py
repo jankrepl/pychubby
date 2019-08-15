@@ -352,7 +352,8 @@ class Multiple(Action):
         if not isinstance(self.per_face_action, list):
             self.per_face_action = len(lfs) * [self.per_face_action]
 
-        assert len(lfs) == len(self.per_face_action)
+        if not len(lfs) == len(self.per_face_action):
+            raise ValueError("Number of actions must be equal to number of faces.")
 
         lf_list_new = []
         for lf, a in zip(lfs, self.per_face_action):
