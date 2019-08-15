@@ -367,10 +367,21 @@ class LandmarkFace:
         """
         return np.linalg.norm(self.points[landmark_1] - self.points[landmark_2])
 
-    def plot(self, figsize=(12, 12)):
-        """Plot face together with landmarks."""
+    def plot(self, figsize=(12, 12), show_landmarks=True):
+        """Plot face together with landmarks.
+
+        Parameters
+        ----------
+        figsize : tuple
+            Size of the figure - (height, width).
+
+        show_landmarks : bool
+            Show all 68 landmark points on the face.
+
+        """
         plt.figure(figsize=figsize)
-        plt.scatter(self.points[:, 0], self.points[:, 1], c="black")
+        if show_landmarks:
+            plt.scatter(self.points[:, 0], self.points[:, 1], c="black")
         plt.imshow(self.img, cmap="gray")
 
 
@@ -393,6 +404,7 @@ class LandmarkFaces:
             raise ValueError("No LandmarkFace available.")
 
         if not all([isinstance(x, LandmarkFace) for x in lf_list]):
+            print([type(x) for x in lf_list])
             raise TypeError("All entries need to be a LandmarkFace instance")
 
         ref_img = lf_list[0].img
@@ -408,10 +420,32 @@ class LandmarkFaces:
         """Access item."""
         return self.lf_list[ix]
 
-    def plot(self, figsize=(12, 12)):
-        """Plot."""
+    def plot(self, figsize=(12, 12), show_numbers=True, show_landmarks=False):
+        """Plot.
+
+        Parameters
+        ----------
+        figsize : tuple
+            Size of the figure - (height, width).
+
+        show_numbers : bool
+            If True, then a number is shown on each face representing its order. This order is
+            useful when using the metaaction ``Multiple``.
+
+        show_landmarks : bool
+            Show all 68 landmark points on each of the faces.
+
+        """
         plt.figure(figsize=figsize)
-        for lf in self:
-            plt.scatter(lf.points[:, 0], lf.points[:, 1], c='black')
+        for i, lf in enumerate(self):
+            if show_numbers:
+                plt.annotate(str(i),
+                             lf['LOWERMOST_NOSE'],
+                             size=lf.euclidean_distance(8, 27),
+                             ha='center',
+                             va='center')
+
+            if show_landmarks:
+                plt.scatter(lf.points[:, 0], lf.points[:, 1], c='black')
 
         plt.imshow(self[0].img, cmap='gray')

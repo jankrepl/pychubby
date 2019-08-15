@@ -323,8 +323,9 @@ class TestLandmarkFacesAll:
 
         lfs = LandmarkFaces(lf)
 
-        lfs.plot()
+        lfs.plot(show_numbers=True, show_landmarks=True)
 
         mock.figure.assert_called()
         mock.scatter.assert_called()
+        mock.annotate.assert_called()
         mock.imshow.assert_called()
