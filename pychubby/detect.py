@@ -190,7 +190,7 @@ class LandmarkFace:
     """
 
     @classmethod
-    def estimate(cls, img, model_path=None, n_upsamples=1):
+    def estimate(cls, img, model_path=None, n_upsamples=1, allow_multiple=False):
         """Estimate the 68 landmarks.
 
         Parameters
@@ -206,19 +206,46 @@ class LandmarkFace:
             Upsample factor to apply to the image before detection. Allows to recognize
             more faces.
 
+        allow_multiple : bool
+            If True, multiple faces are allowed. In case more than one face detected then instance
+            of ``LandmarkFaces`` is returned. If False, raises error if more faces detected.
+
+        Returns
+        -------
+        LandmarkFace or LandmarkFaces
+            If only one face detected, then returns instance of ``LandmarkFace``. If multiple faces
+            detected and `allow_multiple=True` then instance of ``LandmarFaces`` is returned.
+
         """
         corners, faces = face_rectangle(img, n_upsamples=n_upsamples)
 
-        if len(corners) != 1:
-            raise ValueError(
-                "Only possible to model one face, detected faces {}".format(
-                    len(corners)
-                )
-            )
-        _, face = corners[0], faces[0]
-        points, _ = landmarks_68(img, face)
+        if len(corners) == 0:
+            raise ValueError("No faces detected.")
 
-        return cls(points, img)
+        elif len(corners) == 1:
+            _, face = corners[0], faces[0]
+            points, _ = landmarks_68(img, face)
+
+            return cls(points, img)
+
+        else:
+            if not allow_multiple:
+                raise ValueError(
+                    "Only possible to model one face, {} found. Consider using allow_multiple.".format(
+                        len(corners)
+                    )
+                )
+            else:
+                all_lf = []
+                for face in faces:
+                    points, _ = landmarks_68(img, face)
+                    try:
+                        all_lf.append(cls(points, img))
+
+                    except ValueError:
+                        pass
+
+                return LandmarkFaces(*all_lf)
 
     def __init__(self, points, img, rectangle=None):
         """Construct."""
@@ -345,3 +372,46 @@ class LandmarkFace:
         plt.figure(figsize=figsize)
         plt.scatter(self.points[:, 0], self.points[:, 1], c="black")
         plt.imshow(self.img, cmap="gray")
+
+
+class LandmarkFaces:
+    """Class enclosing multiple instances of ``LandmarkFace``.
+
+    Parameters
+    ----------
+    *lf_list : list
+        Sequence of ``LandmarkFace`` instances.
+
+    """
+
+    def __init__(self, *lf_list):
+        """Construct."""
+        self.lf_list = lf_list
+
+        # checks
+        if not lf_list:
+            raise ValueError("No LandmarkFace available.")
+
+        if not all([isinstance(x, LandmarkFace) for x in lf_list]):
+            raise TypeError("All entries need to be a LandmarkFace instance")
+
+        ref_img = lf_list[0].img
+        for lf in lf_list[1:]:
+            if not np.allclose(ref_img, lf.img):
+                raise ValueError("Each LandmarkFace image needs to be identical.")
+
+    def __len__(self):
+        """Compute length."""
+        return len(self.lf_list)
+
+    def __getitem__(self, ix):
+        """Access item."""
+        return self.lf_list[ix]
+
+    def plot(self, figsize=(12, 12)):
+        """Plot."""
+        plt.figure(figsize=figsize)
+        for lf in self:
+            plt.scatter(lf.points[:, 0], lf.points[:, 1], c='black')
+
+        plt.imshow(self[0].img, cmap='gray')

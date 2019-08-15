@@ -9,7 +9,7 @@ import pytest
 import scipy
 
 import pychubby.detect
-from pychubby.detect import LANDMARK_NAMES, LandmarkFace, face_rectangle, landmarks_68
+from pychubby.detect import LANDMARK_NAMES, LandmarkFace, LandmarkFaces, face_rectangle, landmarks_68
 
 
 class TestLandmarkNames:
@@ -165,6 +165,38 @@ class TestLandmarkFaceEstimate:
         assert lf.points.shape == (68, 2)
         assert lf.img.shape == (10, 11)
 
+    def test_no_faces(self, monkeypatch):
+        monkeypatch.setattr('pychubby.detect.face_rectangle',
+                            lambda *args, **kwargs: ([], []))
+        img = np.random.random((10, 11))
+
+        with pytest.raises(ValueError):
+            LandmarkFace.estimate(img)
+
+    def test_multiple_faces(self, monkeypatch):
+        img = np.random.random((10, 11))
+
+        monkeypatch.setattr('pychubby.detect.face_rectangle',
+                            lambda *args, **kwargs: (2 * [None], 2 * [None]))
+
+        monkeypatch.setattr('pychubby.detect.landmarks_68',
+                            lambda *args: (np.random.random((68, 2)), None))
+
+        with pytest.raises(ValueError):
+            LandmarkFace.estimate(img, allow_multiple=False)
+
+        lfs = LandmarkFace.estimate(img, allow_multiple=True)
+
+        assert isinstance(lfs, LandmarkFaces)
+        assert len(lfs) == 2
+
+        # only feed invalid, empty entry for LandmarkFaces constructor
+        monkeypatch.setattr('pychubby.detect.landmarks_68',
+                            lambda *args: (np.zeros((68, 2)), None))
+
+        with pytest.raises(ValueError):
+            LandmarkFace.estimate(img, allow_multiple=True)
+
 
 class TestLandmakrFaceEuclideanDistance:
     """Collection of tests focused on the `euclidean_distance` method."""
@@ -246,6 +278,52 @@ class TestLandmarkFacePlot:
         lf = LandmarkFace(np.random.random((68, 2)), np.random.random((12, 13)))
 
         lf.plot()
+
+        mock.figure.assert_called()
+        mock.scatter.assert_called()
+        mock.imshow.assert_called()
+
+
+@pytest.fixture()
+def lf():
+    points = np.random.random((68, 2))
+    return LandmarkFace(points, np.zeros((12, 13)))
+
+
+class TestLandmarkFacesAll:
+    """Collection of tests focused on the ``LandmarkFaces`` class."""
+
+    def test_constructor(self):
+        with pytest.raises(ValueError):
+            LandmarkFaces()
+
+        with pytest.raises(TypeError):
+            LandmarkFaces('a')
+
+        with pytest.raises(ValueError):
+            points = np.random.random((68, 2))
+            lf_1 = LandmarkFace(points, np.zeros((12, 13)))
+            lf_2 = LandmarkFace(points, np.ones((12, 13)))
+            LandmarkFaces(lf_1, lf_2)
+
+    def test_length(self, lf):
+        assert len(LandmarkFaces(lf, lf, lf)) == 3
+        assert len(LandmarkFaces(lf, lf, lf, lf, lf)) == 5
+
+    def test_getitem(self, lf):
+        lfs = LandmarkFaces(lf)
+
+        assert np.allclose(lfs[0].points, lf.points)
+        assert np.allclose(lfs[0].img, lf.img)
+
+    def test_plot(self, lf, monkeypatch):
+        mock = Mock()
+
+        monkeypatch.setattr('pychubby.detect.plt', mock)
+
+        lfs = LandmarkFaces(lf)
+
+        lfs.plot()
 
         mock.figure.assert_called()
         mock.scatter.assert_called()
