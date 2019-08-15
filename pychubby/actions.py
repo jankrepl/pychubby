@@ -362,7 +362,7 @@ class Multiple(Action):
 
         # Overall displacement
         img = lfs[0].img
-        shape = img.shape
+        shape = img.shape[:2]
         old_points = np.vstack([lf.points for lf in lfs])
         new_points = np.vstack([lf.points for lf in lf_list_new])
 
