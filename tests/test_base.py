@@ -72,6 +72,13 @@ class TestGenerate:
         with pytest.raises(TypeError):
             DisplacementField.generate((4, 5), old_points, new_points)
 
+    def test_incorrect_output_shape(self):
+        points = np.random.random((10, 2))
+        shape = (12, 13, 3)
+
+        with pytest.raises(ValueError):
+            DisplacementField.generate(shape, points, points)
+
     def test_incorrect_input_shape(self):
         new_points = np.array([[1, 1], [2, 2]])
         old_points = np.array([[1, 1], [2, 2], [3, 3]])

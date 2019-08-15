@@ -170,6 +170,14 @@ class TestMultiple:
         assert isinstance(df, DisplacementField)
         assert len(lfs) == len(new_lfs)
 
+    def test_wrong_n_of_action(self, random_lf):
+        lfs = LandmarkFaces(random_lf, random_lf)
+
+        a = Multiple([Smile()])
+
+        with pytest.raises(ValueError):
+            a.perform(lfs)
+
 
 class TestPipeline:
     """Collection of tests focused on the ``Smile`` action."""
