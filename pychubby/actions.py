@@ -6,7 +6,7 @@ import numpy as np
 from skimage.transform import AffineTransform
 
 from pychubby.base import DisplacementField
-from pychubby.detect import LANDMARK_NAMES, LandmarkFace
+from pychubby.detect import LANDMARK_NAMES, LandmarkFace, LandmarkFaces
 from pychubby.reference import DefaultRS
 
 
@@ -313,6 +313,69 @@ class LinearTransform(Action):
         y_shifts = {i: (tformed_inp_points[i] - lf[i])[1] for i in range(68)}
 
         return AbsoluteMove(x_shifts=x_shifts, y_shifts=y_shifts).perform(lf)
+
+
+class Multiple(Action):
+    """Applying actions to multiple faces.
+
+    Parameters
+    ----------
+    per_face_action : list or Action
+        If list then instances of some actions (subclasses of ``Action``) than exactly match
+        the order of ``LandmarkFace`` instances within the ``LandmarkFaces`` instance. Also posible
+        to use None for no action. If``Action`` then the same action will be performed on each
+        available ``LandmarkFace``.
+
+    """
+
+    def __init__(self, per_face_action):
+        """Construct."""
+        self.per_face_action = per_face_action
+
+    def perform(self, lfs):
+        """Perform actions on multiple faces.
+
+        Parameters
+        ----------
+        lfs : LandmarkFaces
+            Instance of ``LandmarkFaces``.
+
+        Returns
+        -------
+        new_lfs : LandmarkFaces
+            Instance of a ``LandmarkFaces`` after taking the action on each face.
+
+        df : DisplacementField
+            Displacement field representing the transformation between the old and new image.
+
+        """
+        if not isinstance(self.per_face_action, list):
+            self.per_face_action = len(lfs) * [self.per_face_action]
+
+        assert len(lfs) == len(self.per_face_action)
+
+        lf_list_new = []
+        for lf, a in zip(lfs, self.per_face_action):
+            lf_new, _ = a.perform(lf) if a is not None else (lf, None)
+            lf_list_new.append(lf_new)
+
+        # Overall displacement
+        img = lfs[0].img
+        shape = img.shape
+        old_points = np.vstack([lf.points for lf in lfs])
+        new_points = np.vstack([lf.points for lf in lf_list_new])
+
+        df = DisplacementField.generate(shape,
+                                        old_points,
+                                        new_points,
+                                        anchor_corners=True,
+                                        function='linear')
+
+        # Make sure same images
+        img_final = df.warp(img)
+        lfs_new = LandmarkFaces(*[LandmarkFace(lf.points, img_final) for lf in lf_list_new])
+
+        return lfs_new, df
 
 
 class OpenEyes(Action):

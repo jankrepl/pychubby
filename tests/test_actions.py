@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 
-from pychubby.actions import (Action, AbsoluteMove, Chubbify, Lambda, LinearTransform,
+from pychubby.actions import (Action, AbsoluteMove, Chubbify, Lambda, LinearTransform, Multiple,
                               Pipeline, Smile, OpenEyes)
 from pychubby.base import DisplacementField
-from pychubby.detect import LandmarkFace
+from pychubby.detect import LandmarkFace, LandmarkFaces
 
 # FIXTURES
 @pytest.fixture()
@@ -149,6 +149,26 @@ class TestOpenEyes:
         else:
             assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
             assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+
+class TestMultiple:
+    """Collection of tests focused on the ``Multiple`` action."""
+
+    @pytest.mark.parametrize('per_face_action', [Smile(), [Smile(), Smile()]],
+                             ids=['single', 'many'])
+    def test_overall(self, random_lf, per_face_action):
+        lf_1 = random_lf
+        lf_2 = LandmarkFace(random_lf.points + np.random.random((68, 2)), random_lf.img)
+
+        lfs = LandmarkFaces(lf_1, lf_2)
+
+        a = Multiple(per_face_action)
+
+        new_lfs, df = a.perform(lfs)
+
+        assert isinstance(new_lfs, LandmarkFaces)
+        assert isinstance(df, DisplacementField)
+        assert len(lfs) == len(new_lfs)
 
 
 class TestPipeline:
