@@ -366,6 +366,7 @@ class LandmarkFace:
         if show_landmarks:
             plt.scatter(self.points[:, 0], self.points[:, 1], c="black")
         plt.imshow(self.img, cmap="gray")
+        plt.show()
 
 
 class LandmarkFaces:
@@ -432,3 +433,4 @@ class LandmarkFaces:
                 plt.scatter(lf.points[:, 0], lf.points[:, 1], c='black')
 
         plt.imshow(self[0].img, cmap='gray')
+        plt.show()
