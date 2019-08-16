@@ -27,17 +27,20 @@ For each face in an image define what **actions** are to be performed on it, `py
 ```python
 import matplotlib.pyplot as plt
 
-from pychubby.actions import Chubbify, Pipeline, Smile
+from pychubby.actions import Chubbify, Multiple, Pipeline, Smile
 from pychubby.detect import LandmarkFace
 
 img_path = 'path/to/your/image'
 img = plt.imread(img_path)
 
 lf = LandmarkFace.estimate(img)
-a = Pipeline([Chubbify(), Smile()])
 
-new_lf, _ = a.perform(lf)
-new_lf.plot()
+a_per_face = Pipeline([Chubbify(), Smile()])
+a_all = Multiple(a_per_face)
+
+
+new_lf, _ = a_all.perform(lf)
+new_lf.plot(show_landmarks=False, show_numbers=False)
 ```
 
 ### Development
