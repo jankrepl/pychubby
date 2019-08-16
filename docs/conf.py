@@ -26,6 +26,8 @@ release = '0.1'
 
 
 # -- General configuration ---------------------------------------------------
+# Set the welcome page for readthedocs
+master_doc = 'index'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
