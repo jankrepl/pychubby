@@ -171,12 +171,28 @@ class TestMultiple:
         assert len(lfs) == len(new_lfs)
 
     def test_wrong_n_of_action(self, random_lf):
-        lfs = LandmarkFaces(random_lf, random_lf)
+        lfs = LandmarkFaces(random_lf, random_lf, random_lf)
 
-        a = Multiple([Smile()])
+        a = Multiple([Smile(), Smile()])
 
         with pytest.raises(ValueError):
             a.perform(lfs)
+
+    def test_wrong_constructor(self):
+
+        with pytest.raises(TypeError):
+            Multiple([Smile(), 'WRONG'])
+
+        with pytest.raises(TypeError):
+            Multiple('WRONG')
+
+    def test_lf_to_lfs_casting(self, random_lf):
+        a = Multiple(Smile())
+
+        new_lfs, df = a.perform(random_lf)
+
+        assert isinstance(new_lfs, LandmarkFaces)
+        assert isinstance(df, DisplacementField)
 
 
 class TestPipeline:

@@ -321,16 +321,26 @@ class Multiple(Action):
     Parameters
     ----------
     per_face_action : list or Action
-        If list then instances of some actions (subclasses of ``Action``) than exactly match
-        the order of ``LandmarkFace`` instances within the ``LandmarkFaces`` instance. Also posible
-        to use None for no action. If``Action`` then the same action will be performed on each
-        available ``LandmarkFace``.
+        If list then elements are instances of some actions (subclasses of ``Action``) that
+        exactly match the order of ``LandmarkFace`` instances within the ``LandmarkFaces``
+        instance. It is also posible to use None for no action. If ``Action`` then the
+        same action will be performed on each available ``LandmarkFace``.
 
     """
 
     def __init__(self, per_face_action):
         """Construct."""
-        self.per_face_action = per_face_action
+        if isinstance(per_face_action, list):
+            if not all([isinstance(a, Action) or a is None for a in per_face_action]):
+                raise TypeError("All elements of per_face_action need to be actions.")
+
+            self.per_face_action = per_face_action
+
+        elif isinstance(per_face_action, Action) or per_face_action is None:
+            self.per_face_action = [per_face_action]
+
+        else:
+            raise TypeError("per_face_action needs to be an action or a list of actions")
 
     def perform(self, lfs):
         """Perform actions on multiple faces.
@@ -349,14 +359,17 @@ class Multiple(Action):
             Displacement field representing the transformation between the old and new image.
 
         """
-        if not isinstance(self.per_face_action, list):
-            self.per_face_action = len(lfs) * [self.per_face_action]
+        if isinstance(lfs, LandmarkFace):
+            lfs = LandmarkFaces(lfs)
 
-        if not len(lfs) == len(self.per_face_action):
-            raise ValueError("Number of actions must be equal to number of faces.")
+        n_actions = len(self.per_face_action)
+        n_faces = len(lfs)
+
+        if n_actions not in {1, n_faces}:
+            raise ValueError("Number of actions ({}) is different from number of faces({})".format(n_actions, n_faces))
 
         lf_list_new = []
-        for lf, a in zip(lfs, self.per_face_action):
+        for lf, a in zip(lfs, self.per_face_action if n_actions != 1 else n_faces * self.per_face_action):
             lf_new, _ = a.perform(lf) if a is not None else (lf, None)
             lf_list_new.append(lf_new)
 
