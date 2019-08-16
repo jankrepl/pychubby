@@ -9,9 +9,7 @@
 ### Installation
 ##### 1) Install `pychubby` package
 ```bash
-git clone https://github.com/jankrepl/pychubby.git
-cd pychubby
-pip install .
+pip install git+https://github.com/jankrepl/pychubby.git
 ```
 ##### 2) Get a pretrained landmark detection model
 ```bash
