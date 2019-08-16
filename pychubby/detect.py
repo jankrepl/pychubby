@@ -5,7 +5,6 @@ import pathlib
 import dlib
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy
 from skimage.util import img_as_ubyte
 
 from pychubby.base import CACHE_FOLDER
@@ -184,13 +183,10 @@ class LandmarkFace:
     shape : tuple
         Tuple representing the height and width of the image.
 
-    _convex_hull : scipy.spatial.ConvexHull
-        Convex hull of the input landmark points.
-
     """
 
     @classmethod
-    def estimate(cls, img, model_path=None, n_upsamples=1, allow_multiple=False):
+    def estimate(cls, img, model_path=None, n_upsamples=1, allow_multiple=True):
         """Estimate the 68 landmarks.
 
         Parameters
@@ -263,9 +259,6 @@ class LandmarkFace:
             :2
         ]  # only first two dims matter - height and width
 
-        # Inner attributes
-        self._convex_hull = scipy.spatial.ConvexHull(self.points)
-
     def __getitem__(self, val):
         """Return a corresponding coordinate.
 
@@ -294,16 +287,6 @@ class LandmarkFace:
 
         else:
             raise TypeError('Unsupported type {}'.format(type(val)))
-
-    @property
-    def face_area(self):
-        """Area of the face."""
-        return self._convex_hull.area
-
-    @property
-    def face_volume(self):
-        """Volume  of the face in the image."""
-        return self._convex_hull.volume
 
     def angle(self, landmark_1, landmark_2, reference_vector=None, use_radians=False):
         """Angle between two landmarks and positive part of the x axis.

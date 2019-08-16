@@ -6,7 +6,6 @@ import math
 import dlib
 import numpy as np
 import pytest
-import scipy
 
 import pychubby.detect
 from pychubby.detect import LANDMARK_NAMES, LandmarkFace, LandmarkFaces, face_rectangle, landmarks_68
@@ -117,38 +116,9 @@ class TestLandmarkFaceEssentials:
         with pytest.raises(ValueError):
             LandmarkFace(points, img)
 
-    def test_onedimensional_points(self):
-        img = np.zeros((10, 11))
-        points = np.stack([np.arange(68), np.arange(68)], axis=1)
-
-        with pytest.raises(scipy.spatial.qhull.QhullError):
-            LandmarkFace(points, img)
-
-    def test_area_and_volume(self):
-        points = np.random.random((68, 2))
-        points[0, :] = [0, 0]
-        points[1, :] = [1, 1]
-        points[2, :] = [0, 1]
-        points[3, :] = [1, 0]
-
-        img = np.zeros((10, 11))
-
-        lf = LandmarkFace(points, img)
-
-        assert lf.face_area == 4
-        assert lf.face_volume == 1
-
 
 class TestLandmarkFaceEstimate:
     """Tests focused on the class method `estimate` of the LandmarkFace."""
-
-    def test_incorrect_input(self, monkeypatch):
-        img = np.random.random((10, 11))
-
-        monkeypatch.setattr('pychubby.detect.face_rectangle',
-                            lambda *args, **kwargs: (2 * [None], 4 * [None]))
-        with pytest.raises(ValueError):
-            LandmarkFace.estimate(img)
 
     def test_overall(self, monkeypatch):
         img = np.random.random((10, 11))
