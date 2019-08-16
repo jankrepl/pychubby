@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/jankrepl/pychubby/branch/master/graph/badge.svg)](https://codecov.io/gh/jankrepl/pychubby)
 
 # PyChubby
-![](https://imgur.com/Qydlys5)
+![Imgur](https://i.imgur.com/Qydlys5.gifv)
 
 **Tool for creating chubby faces and way more!**
 
