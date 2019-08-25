@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from skimage.util import img_as_ubyte
 
 from pychubby.base import CACHE_FOLDER
+from pychubby.data import get_pretrained_68
 
 LANDMARK_NAMES = {
     "UPPER_TEMPLE_L": 0,
@@ -147,6 +148,8 @@ def landmarks_68(img, rectangle, model_path=None):
     """
     if model_path is None:
         model_path = CACHE_FOLDER / "shape_predictor_68_face_landmarks.dat"
+        get_pretrained_68(model_path.parent)
+
     else:
         model_path = pathlib.Path(str(model_path))
 

@@ -52,6 +52,8 @@ class TestLandmarks68:
             lm_points, original = landmarks_68(face_img, dlib_rectangle, tmp_path / 'fake_model.dat')
         # nasty hack
         monkeypatch.setattr('pychubby.detect.CACHE_FOLDER', tmp_path)
+        monkeypatch.setattr('pychubby.detect.get_pretrained_68', lambda *x: None)
+
         with pytest.raises(IOError):
             lm_points, original = pychubby.detect.landmarks_68(face_img, dlib_rectangle)
 

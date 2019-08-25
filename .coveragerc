@@ -1,5 +1,6 @@
 [run]
 omit = 
+    pychubby/data.py
     tests/*
     venv/*
     setup.py
