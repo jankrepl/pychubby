@@ -49,7 +49,7 @@ Let's try to make the person smile:
 
 There are 2 important things to note. Firstly the :code:`new_lf` now contains both the warped version
 of the original image as well as the transformed landmark points. Secondly, the :code:`perform`
-method also returns a :code:`df` which is an istance of `pychubby.base.DisplacementField` and
+method also returns a :code:`df` which is an instance of `pychubby.base.DisplacementField` and
 represents the pixel by pixel transformation between the old and the new (smiling) image.
 
 To see all currently available actions go to :ref:`gallery`.
