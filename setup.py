@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pychubby",
-    version=0.0.1,
+    version="0.0.1",
     author="Jan Krepl",
     author_email="kjan.official@gmail.com",
     description="Face warping",
