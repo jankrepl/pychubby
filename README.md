@@ -2,26 +2,20 @@
 [![codecov](https://codecov.io/gh/jankrepl/pychubby/branch/master/graph/badge.svg)](https://codecov.io/gh/jankrepl/pychubby)
 
 # PyChubby
+**Tool for automated face warping**
+
 ![intro_resized](https://user-images.githubusercontent.com/18519371/63134578-59a81f00-bfca-11e9-9b75-45710f81c7f8.gif)
 
-**Tool for creating chubby faces and way more!**
 
 ### Installation
-##### 1) Install `pychubby` package
 ```bash
 pip install git+https://github.com/jankrepl/pychubby.git
 ```
-##### 2) Get a pretrained landmark detection model
-```bash
-git clone https://github.com/davisking/dlib-models.git  # ~400MB, takes some time to download
-mkdir ~/.pychubby  # default folder where pychubby looks for trained models
-cp dlib-models/shape_predictor_68_face_landmarks.dat.bz2 ~/.pychubby/
-bzip2 -d ~/.pychubby/shape_predictor_68_face_landmarks.dat.bz2
-```
-
-
 ### Description
 For each face in an image define what **actions** are to be performed on it, `pychubby` will do the rest.
+
+### Documentation
+<https://pychubby.readthedocs.io>
 
 ### Minimal Example
 ```python
