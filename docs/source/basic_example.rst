@@ -40,7 +40,7 @@ Let's try to make the person smile:
 
 	a = Smile(scale=0.2)
 	new_lf, df = a.perform(lf)  # lf defined above
-	lf.plot(show_landmarks=False)
+	new_lf.plot(show_landmarks=False)
 
 .. image:: https://i.imgur.com/RytGu0t.png
   :width: 400
