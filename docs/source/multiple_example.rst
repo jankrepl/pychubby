@@ -68,4 +68,35 @@ Below is an example of making all faces more chubby.
 
 Different actions
 -----------------
+Alternetively, we might want to apply different action to each face (or potentially no action).
+Below is an example of face specific actions.
 
+
+.. code-block:: python
+
+	from pychubby.actions import Chubbify, LinearTransform, Multiple, OpenEyes, Pipeline, Smile 
+
+	a_0 = LinearTransform(scale_x=0.9, scale_y=0.9)
+	a_1 = Smile(0.14)
+	a_2 = None
+	a_3 = Pipeline([OpenEyes(0.05), LinearTransform(scale_x=1.02, scale_y=1.02), Chubbify(0.2)])
+
+	a = Multiple([a_0, a_1, a_2, a_3])	
+	new_lfs, df = a.perform(lfs)  
+	new_lfs.plot(show_landmarks=False, show_numbers=False)
+
+.. image:: https://i.imgur.com/45NxDyI.jpg 
+  :width: 500
+  :alt: Multiple actions image
+  :align: center
+
+.. code-block:: python
+
+	from pychubby.visualize import create_animation
+
+	ani = create_animation(df, img)
+
+.. image:: https://i.imgur.com/ZWYEIZN.jpg
+  :width: 500
+  :alt: Single action gif
+  :align: center
