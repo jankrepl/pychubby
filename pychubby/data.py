@@ -51,7 +51,7 @@ def get_pretrained_68(folder=None, verbose=True):
     CHUNK = 16 * 1024
 
     decompressor = bz2.BZ2Decompressor()
-    with open(filepath, 'wb') as fp:
+    with open(str(filepath), 'wb') as fp:
         while True:
             chunk = req.read(CHUNK)
             if not chunk:
