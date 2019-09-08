@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from pychubby.actions import (Action, AbsoluteMove, Chubbify, Lambda, LinearTransform, Multiple,
-                              Pipeline, Smile, OpenEyes)
+                              Pipeline, RaiseEyebrow, Smile, OpenEyes, StretchNostrils)
 from pychubby.base import DisplacementField
 from pychubby.detect import LandmarkFace, LandmarkFaces
 
@@ -208,12 +208,49 @@ class TestPipeline:
         assert df.is_valid
 
 
+class TestRaiseEyebrow:
+    """Collection of tests focused on the ``RaiseEyebrow`` action."""
+
+    @pytest.mark.parametrize('side', ('left', 'right', 'both'))
+    @pytest.mark.parametrize('scale', (0.2, 0.4, 1, 0))
+    def test_simple(self, random_lf, scale, side):
+        a = RaiseEyebrow(scale=scale, side=side)
+        new_lf, df = a.perform(random_lf)
+
+        if scale == 0:
+            assert np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+        else:
+            assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+    def test_wrong_side(self):
+        with pytest.raises(ValueError):
+            RaiseEyebrow(scale=0.1, side='WRONG')
+
+
 class TestSmile:
     """Collection of tests focused on the ``Smile`` action."""
 
     @pytest.mark.parametrize('scale', (0.2, 0.4, 1, 0))
     def test_simple(self, random_lf, scale):
         a = Smile(scale)
+        new_lf, df = a.perform(random_lf)
+
+        if scale == 0:
+            assert np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+        else:
+            assert not np.allclose(df.delta_x, np.zeros_like(df.delta_x))
+            assert not np.allclose(df.delta_y, np.zeros_like(df.delta_y))
+
+
+class TestStretchNostrils:
+    """Collection of tests focused on the ``StrechNostrils`` action."""
+
+    @pytest.mark.parametrize('scale', (0.2, 0.4, 1, 0))
+    def test_simple(self, random_lf, scale):
+        a = StretchNostrils(scale)
         new_lf, df = a.perform(random_lf)
 
         if scale == 0:
