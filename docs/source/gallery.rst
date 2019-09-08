@@ -32,7 +32,7 @@ Make a face chubby. Affine transformations invariant.
 Lambda
 ------
 Low-level action where only angles and relative sizes in the reference space are to be specified.
-Affine transformation invariant.
+Affine transformation invariant. For more details see :ref:`custom_actions_lambda`.
 
 .. code-block:: python
 

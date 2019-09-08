@@ -13,6 +13,7 @@ change facial expressions and shapes of any person in an image.
    source/pipeline_example
    source/multiple_example
    source/gallery
+   source/building_blocks
    source/adding_custom_actions
    source/api
 
