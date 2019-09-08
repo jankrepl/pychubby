@@ -1,7 +1,8 @@
 .. _building_blocks:
 
-Building blocks
+Building Blocks
 ===============
+This page is dedicated to explaining the logic behind :code:`pychubby`.
 
 68 landmarks
 ------------

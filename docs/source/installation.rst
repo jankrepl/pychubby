@@ -1,6 +1,13 @@
 Installation
 ============
 
+From PyPI
+---------
+.. code-block:: bash
+
+	pip install pychubby
+
+
 From source
 -----------
 .. code-block:: bash

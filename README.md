@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/jankrepl/pychubby.svg?branch=master)](https://travis-ci.com/jankrepl/pychubby)
 [![codecov](https://codecov.io/gh/jankrepl/pychubby/branch/master/graph/badge.svg)](https://codecov.io/gh/jankrepl/pychubby)
+[![PyPI version](https://badge.fury.io/py/pychubby.svg)](https://badge.fury.io/py/pychubby)
+
 
 # PyChubby
 **Tool for automated face warping**
@@ -9,7 +11,7 @@
 
 ### Installation
 ```bash
-pip install git+https://github.com/jankrepl/pychubby.git
+pip install pychubby
 ```
 ### Description
 For each face in an image define what **actions** are to be performed on it, `pychubby` will do the rest.
