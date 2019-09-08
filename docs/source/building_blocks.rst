@@ -31,7 +31,7 @@ the following three methods:
 
 The default reference space is the :code:`DefaultRS` and its logic is captured in the below figure.
 
-.. image:: https://i.imgur.com/pgsXbbz.png 
+.. image:: https://i.imgur.com/HRBKTr4.gif 
    :width: 800
    :align: center
 
