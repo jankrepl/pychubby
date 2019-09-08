@@ -1,14 +1,28 @@
 from setuptools import setup
 
+import pychubby
+
+LONG_DESCRIPTION = "Automated face warping tool"
+PROJECT_URLS = {
+    'Bug Tracker': 'https://github.com/jankrepl/pychubby/issues',
+    'Documentation': 'https://pychubby.readthedocs.io',
+    'Source Code': 'https://github.com/jankrepl/pychubby'
+}
+VERSION = pychubby.__version__
+
 setup(
     name="pychubby",
-    version="0.0.1",
+    version=VERSION,
     author="Jan Krepl",
     author_email="kjan.official@gmail.com",
-    description="Face warping",
+    description="Automated face warping tool",
+    long_description=LONG_DESCRIPTION,
     url="https://github.com/jankrepl/pychubby",
+	project_urls=PROJECT_URLS,
     packages=["pychubby"],
+    license="MIT",
     classifiers=[
+        "License :: OSI Approved :: MIT License",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "Programming Language :: C",
@@ -36,6 +50,6 @@ setup(
     extras_require={
         "dev": ["codecov", "flake8", "pytest>=3.6", "pytest-cov", "tox"],
         "docs": ["sphinx", "sphinx_rtd_theme"],
-    },
-    entry_points={"console_scripts": ["pc = pychubby.cli:cli"]},
+    }
+    #entry_points={"console_scripts": ["pc = pychubby.cli:cli"]},
 )
