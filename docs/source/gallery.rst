@@ -83,6 +83,18 @@ Metaaction allowing for multiple actions on a single face.
    :width: 300
    :align: center
 
+RaiseEyebrow
+------------
+Raise an eyebrow. Left, right or both. Affine transformation invariant.
+
+.. code-block:: python
+
+	RaiseEyebrow(scale=0.1, side='left')
+
+.. image:: https://i.imgur.com/6S9fpM1.gif
+   :width: 300
+   :align: center
+
 Smile
 -----
 Smile. Affine transformation invariant.
@@ -95,5 +107,16 @@ Smile. Affine transformation invariant.
    :width: 300
    :align: center
 
+StretchNostrils
+---------------
+Stretch nostrils. Affine transformation invariant.
+
+.. code-block:: python
+
+	StretchNostrils(0.1)
+
+.. image:: https://i.imgur.com/IxnUh6u.gif 
+   :width: 300
+   :align: center
 
 

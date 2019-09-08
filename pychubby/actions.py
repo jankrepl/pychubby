@@ -426,7 +426,7 @@ class OpenEyes(Action):
 
     """
 
-    def __init__(self, scale):
+    def __init__(self, scale=0.1):
         """Construct."""
         self.scale = scale
 
