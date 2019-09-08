@@ -43,7 +43,7 @@ class DefaultRS(ReferenceSpace):
                          'UPPER_TEMPLE_L': (-1, -1),
                          'UPPER_TEMPLE_R': (1, -1),
                          'UPPERMOST_NOSE': (0, -1),
-                         'LOWERMOST_NOSE': (0, 0)
+                         'MIDDLE_NOSTRIL': (0, 0)
                             }
 
     def estimate(self, lf):
