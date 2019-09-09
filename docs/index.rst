@@ -6,7 +6,7 @@ change facial expressions and shapes of any person in an image.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide:
 
    source/installation
    source/basic_example
@@ -15,8 +15,18 @@ change facial expressions and shapes of any person in an image.
    source/gallery
    source/building_blocks
    source/adding_custom_actions
-   source/api
 
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference:
+
+   source/pychubby.actions
+   source/pychubby.base
+   source/pychubby.data
+   source/pychubby.detect
+   source/pychubby.reference
+   source/pychubby.utils
+   source/pychubby.visualization
 
 Indices and tables
 ==================

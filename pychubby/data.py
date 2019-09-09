@@ -20,20 +20,19 @@ def get_pretrained_68(folder=None, verbose=True):
 
     References
     ----------
-    .. [1] C. Sagonas, E. Antonakos, G, Tzimiropoulos, S. Zafeiriou, M. Pantic.
+
+    [1] C. Sagonas, E. Antonakos, G, Tzimiropoulos, S. Zafeiriou, M. Pantic.
         300 faces In-the-wild challenge: Database and results. Image and Vision Computing (IMAVIS),
         Special Issue on Facial Landmark Localisation "In-The-Wild". 2016.
 
-       [2] C. Sagonas, G. Tzimiropoulos, S. Zafeiriou, M. Pantic.
+    [2] C. Sagonas, G. Tzimiropoulos, S. Zafeiriou, M. Pantic.
         A semi-automatic methodology for facial landmark annotation. Proceedings of IEEE Int’l Conf.
         Computer Vision and Pattern Recognition (CVPR-W), 5th Workshop on Analysis and Modeling of
         Faces and Gestures (AMFG 2013). Oregon, USA, June 2013.
 
-       [3] C. Sagonas, G. Tzimiropoulos, S. Zafeiriou, M. Pantic.
+    [3] C. Sagonas, G. Tzimiropoulos, S. Zafeiriou, M. Pantic.
         300 Faces in-the-Wild Challenge: The first facial landmark localization Challenge.
         Proceedings of IEEE Int’l Conf. on Computer Vision (ICCV-W), 300 Faces in-the-Wild
-        Challenge (300-W). Sydney, Australia, December 2013.
-
     """
     url = "https://raw.githubusercontent.com/"
     url += "davisking/dlib-models/master/shape_predictor_68_face_landmarks.dat.bz2"
