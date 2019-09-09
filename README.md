@@ -34,7 +34,6 @@ lf = LandmarkFace.estimate(img)
 a_per_face = Pipeline([Chubbify(), Smile()])
 a_all = Multiple(a_per_face)
 
-
 new_lf, _ = a_all.perform(lf)
 new_lf.plot(show_landmarks=False, show_numbers=False)
 ```
