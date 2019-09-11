@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/jankrepl/pychubby.svg?branch=master)](https://travis-ci.com/jankrepl/pychubby)
 [![codecov](https://codecov.io/gh/jankrepl/pychubby/branch/master/graph/badge.svg)](https://codecov.io/gh/jankrepl/pychubby)
 [![PyPI version](https://badge.fury.io/py/pychubby.svg)](https://badge.fury.io/py/pychubby)
-
+[![Documentation Status](https://readthedocs.org/projects/pychubby/badge/?version=latest)](https://pychubby.readthedocs.io/en/latest/?badge=latest)
 
 # PyChubby
 **Tool for automated face warping**
