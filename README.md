@@ -38,6 +38,33 @@ new_lf, _ = a_all.perform(lf)
 new_lf.plot(show_landmarks=False, show_numbers=False)
 ```
 
+### CLI
+`pychubby` also comes with a CLI that exposes some
+of its functionality. You can list the commands with `pc --help`:
+
+```text
+Usage: pc [OPTIONS] COMMAND [ARGS]...
+
+  Automated face warping tool.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  list     List available actions.
+  perform  Take an action.
+```
+
+To perform an action (Smile in the example below) and plot the result on the screen 
+```bash
+pc perform Smile INPUT_IMG_PATH
+```
+
+or if you want to create a new image and save it
+```bash
+pc perform Smile INPUT_IMG_PATH OUTPUT_IMG_PATH
+```
+
 ### Development
 ```bash
 git clone https://github.com/jankrepl/pychubby.git
