@@ -15,6 +15,7 @@ change facial expressions and shapes of any person in an image.
    source/gallery
    source/building_blocks
    source/adding_custom_actions
+   source/CLI
 
 .. toctree::
    :maxdepth: 2
