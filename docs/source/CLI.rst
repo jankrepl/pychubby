@@ -72,7 +72,7 @@ In particular, one can then warp an image in the following fashion
 
 .. code-block:: bash
 
-	pc perform Smile --scale 0.3 img_cousin.jpg img_cousing_smiling.jpg
+	pc perform Smile --scale 0.3 img_cousin.jpg img_cousin_smiling.jpg
 
 
 
