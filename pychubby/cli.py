@@ -49,9 +49,11 @@ class ActionFactory:
     ----------
     kwargs : dict
         All parameters (keys) of a given action together with their defaults (values).
+
     """
 
     def __init__(self, name, doc):
+        """Construct."""
         self.name = name
         self.doc = doc
 

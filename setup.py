@@ -54,7 +54,7 @@ setup(
     ],
     install_requires=INSTALL_REQUIRES,
     extras_require={
-        "dev": ["codecov", "flake8", "pytest>=3.6", "pytest-cov", "tox"],
+        "dev": ["codecov", "flake8", "pydocstyle", "pytest>=3.6", "pytest-cov", "tox"],
         "docs": ["sphinx", "sphinx_rtd_theme"],
     },
     entry_points={"console_scripts": ["pc = pychubby.cli:cli"]},
