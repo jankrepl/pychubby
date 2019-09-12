@@ -1,4 +1,9 @@
-"""Definition of actions."""
+"""Definition of actions.
+
+Note that for each action (class) the first line of the docstring
+as well as the default parameters of the constructor are used by
+the CLI.
+"""
 
 from abc import ABC, abstractmethod
 
@@ -273,12 +278,12 @@ class LinearTransform(Action):
 
     def __init__(
         self,
-        scale_x=1,
-        scale_y=1,
-        rotation=0,
-        shear=0,
-        translation_x=0,
-        translation_y=0,
+        scale_x=1.,
+        scale_y=1.,
+        rotation=0.,
+        shear=0.,
+        translation_x=0.,
+        translation_y=0.,
         reference_space=None,
     ):
         """Construct."""
