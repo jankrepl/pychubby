@@ -2,6 +2,7 @@
 from collections import namedtuple
 from unittest.mock import Mock
 import math
+import sys
 
 import dlib
 import numpy as np
@@ -9,6 +10,9 @@ import pytest
 
 import pychubby.detect
 from pychubby.detect import LANDMARK_NAMES, LandmarkFace, LandmarkFaces, face_rectangle, landmarks_68
+
+
+PYTHON_VERSION = sys.version_info[0] + 0.1 * sys.version_info[1]
 
 
 class TestLandmarkNames:
@@ -251,9 +255,10 @@ class TestLandmarkFacePlot:
 
         lf.plot()
 
-        mock.figure.assert_called()
-        mock.scatter.assert_called()
-        mock.imshow.assert_called()
+        if PYTHON_VERSION > 3.5:
+            mock.figure.assert_called()
+            mock.scatter.assert_called()
+            mock.imshow.assert_called()
 
 
 @pytest.fixture()
@@ -297,7 +302,8 @@ class TestLandmarkFacesAll:
 
         lfs.plot(show_numbers=True, show_landmarks=True)
 
-        mock.figure.assert_called()
-        mock.scatter.assert_called()
-        mock.annotate.assert_called()
-        mock.imshow.assert_called()
+        if PYTHON_VERSION > 3.5:
+            mock.figure.assert_called()
+            mock.scatter.assert_called()
+            mock.annotate.assert_called()
+            mock.imshow.assert_called()
