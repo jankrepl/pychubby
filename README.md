@@ -6,8 +6,7 @@
 # PyChubby
 **Tool for automated face warping**
 
-![intro_resized](https://user-images.githubusercontent.com/18519371/63134578-59a81f00-bfca-11e9-9b75-45710f81c7f8.gif)
-
+![intro](https://user-images.githubusercontent.com/18519371/64875224-ed621f00-d64c-11e9-92ad-8f76a4b95bcc.gif)
 
 ### Installation
 ```bash
