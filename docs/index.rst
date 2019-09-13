@@ -1,7 +1,6 @@
 PyChubby
 ========
-
-`pychubby` is a package for automated face warping. It allows the user to programatically
+:code:`pychubby` is a package for automated face warping. It allows the user to programatically
 change facial expressions and shapes of any person in an image.
 
 .. toctree::

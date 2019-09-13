@@ -6,9 +6,40 @@ This page is dedicated to explaining the logic behind :code:`pychubby`.
 
 68 landmarks
 ------------
+:code:`pychubby` relies on the standard 68 facial landmarks framework. Specifically,
+a pretrained :code:`dlib` model is used to achieve this task. See :code:`pychubby.data` for credits 
+and references. Once the landmarks are detected
+one can query them via their index. Alternatively, for the ease of defining new actions
+a dictionary :code:`pychubby.detect.LANDMARK_NAMES` defines a name for each of the 68 landmarks.
+
+.. _building_blocks_landmarkface:
 
 LandmarkFace
 ------------
+:code:`pychubby.detect.LandmarkFace` is one of the most important classes that :code:`pychubby` uses.
+To construct a :code:`LandmarkFace` one needs to provide
+
+1. Image of the face
+2. 68 landmark points
+
+Rather than using the lower level constructor the user will mostly create instances through the class
+method :code:`estimate` which detect the landmark points automatically.
+
+Once instantiated, one can use actions (:code:`pychubby.actions.Action`) to generate a new (warped) 
+:code:`LandmarkFace`. 
+
+
+LandmarkFaces
+-------------
+:code:`pychubby.detect.LandmarkFaces` is a container holding multiple instances of :code:`LandmarkFace`. It
+additionally provides functionality that allows for performing the :code:`Multiple` action on them.
+
+
+Action
+------
+Action is a specific warping recipe that might depend on some parameters. Once instantiated, 
+one can use their :code:`perform` method to warp a :code:`LandmarkFace`. To see already available
+actions go to :ref:`gallery`  or read how to create your own actions :ref:`custom_actions`.
 
 .. _building_blocks_reference_space:
 
@@ -50,8 +81,11 @@ and vice versa is then just a simple matrix multiplication.
 	\textbf{x}_{ref}A^{-1} = \textbf{x}_{inp}
 
 
-Action
-------
 
 DisplacementField
 -----------------
+Displacement field represents a 2D to 2D transformations between two images. 
+To instantiate a :code:`pychubby.base.DisplacementField` one can either use the standard 
+constructor (:code:`delta_x`, :code:`delta_y` arrays).
+Alternatively, one can use a factory method :code:`generate` that creates a :code:`DisplacemetField` based on
+displacement of landmark points.
