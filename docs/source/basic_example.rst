@@ -9,8 +9,8 @@ a single face in it.
   :align: center
 
 
-`pychubby` implements a class :code:`LandmarkFace` which stores  all relevant data that enable face warping.
-Namely it is the image itself and 68 landmark points. To instantiate a `LandmarkFace` one needs 
+:code:`pychubby` implements a class :code:`LandmarkFace` which stores  all relevant data that enable face warping.
+Namely it is the image itself and 68 landmark points. To instantiate a :code:`LandmarkFace` one needs 
 to use a utility class method :code:`estimate`.
 
 
@@ -49,12 +49,12 @@ Let's try to make the person smile:
 
 There are 2 important things to note. Firstly the :code:`new_lf` now contains both the warped version
 of the original image as well as the transformed landmark points. Secondly, the :code:`perform`
-method also returns a :code:`df` which is an instance of `pychubby.base.DisplacementField` and
+method also returns a :code:`df` which is an instance of :code:`pychubby.base.DisplacementField` and
 represents the pixel by pixel transformation between the old and the new (smiling) image.
 
 To see all currently available actions go to :ref:`gallery`.
 
-To create an animation of the action we can use the `visualize` module.
+To create an animation of the action we can use the :code:`visualize` module.
 
 .. code-block:: python
 
