@@ -37,11 +37,11 @@ Let's try to make the person smile but also close  her eyes slightly.
   :alt: Warped image
   :align: center
 
-To create an animation we can use the `visualize` module.
+To create an animation we can use the `visualization` module.
 
 .. code-block:: python
 	
-	from pychubby.visualize import create_animation
+	from pychubby.visualization import create_animation
 
 	ani = create_animation(df, img)
 

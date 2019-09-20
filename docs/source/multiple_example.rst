@@ -57,7 +57,7 @@ Below is an example of making all faces more chubby.
 
 .. code-block:: python
 
-	from pychubby.visualize import create_animation
+	from pychubby.visualization import create_animation
 
 	ani = create_animation(df, img)
 
@@ -92,7 +92,7 @@ Below is an example of face specific actions.
 
 .. code-block:: python
 
-	from pychubby.visualize import create_animation
+	from pychubby.visualization import create_animation
 
 	ani = create_animation(df, img)
 

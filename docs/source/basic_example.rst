@@ -54,11 +54,11 @@ represents the pixel by pixel transformation between the old and the new (smilin
 
 To see all currently available actions go to :ref:`gallery`.
 
-To create an animation of the action we can use the :code:`visualize` module.
+To create an animation of the action we can use the :code:`visualization` module.
 
 .. code-block:: python
 
-	from pychubby.visualize import create_animation
+	from pychubby.visualization import create_animation
 
 	ani = create_animation(df, img) # the displacement field and the original image
 
