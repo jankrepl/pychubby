@@ -72,7 +72,7 @@ class ActionFactory:
         ]
 
         operators += [
-            click.option("--{}".format(k), default=v) for k, v in self.kwargs.items()
+            click.option("--{}".format(k), default=v, show_default=True) for k, v in self.kwargs.items()
         ]
 
         def f(*args, **kwargs):
