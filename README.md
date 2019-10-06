@@ -10,9 +10,21 @@
 ![intro](https://user-images.githubusercontent.com/18519371/64875224-ed621f00-d64c-11e9-92ad-8f76a4b95bcc.gif)
 
 ### Installation
+
 ```bash
 pip install pychubby
 ```
+
+If you get an error `FileNotFoundError: [Errno 2] No such file or directory: 'cmake': 'cmake'`, you
+need to make sure [cmake](www.cmake.org) is installed.  If you're on OSX you can install this via
+Homebrew with:
+
+```shell
+brew install cmake
+```
+
+For other platforms please consult the Cmake documentation at <https://cmake.org/install/>
+
 ### Description
 For each face in an image define what **actions** are to be performed on it, `pychubby` will do the rest.
 
@@ -71,4 +83,3 @@ git clone https://github.com/jankrepl/pychubby.git
 cd pychubby
 pip install -e .[dev]
 ```
-
