@@ -52,6 +52,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         ("Programming Language :: Python :: " "Implementation :: CPython"),
     ],
+    python_requires='>=3.5',
     install_requires=INSTALL_REQUIRES,
     extras_require={
         "dev": ["codecov", "flake8", "pydocstyle", "pytest>=3.6", "pytest-cov", "tox"],
