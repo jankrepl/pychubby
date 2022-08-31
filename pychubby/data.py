@@ -2,7 +2,7 @@
 
 import bz2
 import pathlib
-import urllib
+import urllib.request
 
 from pychubby.base import CACHE_FOLDER
 
